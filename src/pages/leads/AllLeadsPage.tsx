@@ -48,19 +48,19 @@ export default function AllLeadsPage() {
   return (
     <>
       <div className="mb-5">
-        <h1 className="font-serif text-2xl font-semibold tracking-tight text-navy">All leads</h1>
+        <h1 className="page-title">All leads</h1>
         <p className="mt-1 text-[13px] text-muted">Every enquiry from every form on the website.</p>
       </div>
 
-      <div className="mb-3 flex flex-wrap gap-2">
+      <div className="filters-bar">
         <input
           type="text"
           placeholder="Search name, occupation, suburb…"
-          className="w-48 rounded border border-line px-2 py-1.5 text-xs"
+          className="min-w-[140px] basis-full rounded-full border border-line px-3 py-2 text-xs sm:basis-auto sm:w-52"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <select className="rounded border border-line px-2 py-1.5 text-xs" value={source} onChange={(e) => setSource(e.target.value)}>
+        <select className="min-w-[120px] flex-1 rounded-full border border-line px-3 py-2 text-xs sm:flex-none" value={source} onChange={(e) => setSource(e.target.value)}>
           <option value="">All sources</option>
           {meta?.sources.map((s) => (
             <option key={s} value={s}>
@@ -68,7 +68,7 @@ export default function AllLeadsPage() {
             </option>
           ))}
         </select>
-        <select className="rounded border border-line px-2 py-1.5 text-xs" value={band} onChange={(e) => setBand(e.target.value)}>
+        <select className="min-w-[120px] flex-1 rounded-full border border-line px-3 py-2 text-xs sm:flex-none" value={band} onChange={(e) => setBand(e.target.value)}>
           <option value="">All runway bands</option>
           {meta &&
             Object.entries(meta.bandLabels).map(([k, v]) => (
@@ -77,7 +77,7 @@ export default function AllLeadsPage() {
               </option>
             ))}
         </select>
-        <select className="rounded border border-line px-2 py-1.5 text-xs" value={owner} onChange={(e) => setOwner(e.target.value)}>
+        <select className="min-w-[120px] flex-1 rounded-full border border-line px-3 py-2 text-xs sm:flex-none" value={owner} onChange={(e) => setOwner(e.target.value)}>
           <option value="">All owners</option>
           {["Navpreet Aulakh", "Puneet Singh", "Intake Desk (Chandigarh)"].map((o) => (
             <option key={o} value={o}>
@@ -85,7 +85,7 @@ export default function AllLeadsPage() {
             </option>
           ))}
         </select>
-        <select className="rounded border border-line px-2 py-1.5 text-xs" value={status} onChange={(e) => setStatus(e.target.value)}>
+        <select className="min-w-[120px] flex-1 rounded-full border border-line px-3 py-2 text-xs sm:flex-none" value={status} onChange={(e) => setStatus(e.target.value)}>
           <option value="">All statuses</option>
           {meta?.statuses.map((s) => (
             <option key={s} value={s}>
@@ -93,10 +93,10 @@ export default function AllLeadsPage() {
             </option>
           ))}
         </select>
-        <button type="button" className="btn" onClick={handleExport}>
-          Export view CSV
+        <button type="button" className="btn shrink-0" onClick={handleExport}>
+          Export CSV
         </button>
-        <button type="button" className="btn btn-ghost" onClick={handleAdd}>
+        <button type="button" className="btn btn-pri shrink-0" onClick={handleAdd}>
           + Add lead
         </button>
       </div>

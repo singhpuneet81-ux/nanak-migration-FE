@@ -36,7 +36,7 @@ export default function BookingWidgetPreview() {
   return (
     <>
       <div className="mb-5">
-        <h1 className="font-serif text-2xl font-semibold tracking-tight text-navy">Booking page (client view)</h1>
+        <h1 className="page-title">Booking page (client view)</h1>
         <p className="mt-1 text-[13px] text-muted">What clients see on nanakmigration.com.au/book — book one and watch it land.</p>
       </div>
 

@@ -19,7 +19,7 @@ export default function ExportCentrePage() {
   return (
     <>
       <div className="mb-5">
-        <h1 className="font-serif text-2xl font-semibold tracking-tight text-navy">Export centre</h1>
+        <h1 className="page-title">Export centre</h1>
         <p className="mt-1 text-[13px] text-muted">Consent-gated marketing segments from visa data.</p>
       </div>
 

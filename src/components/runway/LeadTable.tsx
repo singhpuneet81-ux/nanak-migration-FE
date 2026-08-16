@@ -26,8 +26,8 @@ export default function LeadTable({ leads, onRowClick }: { leads: Lead[]; onRowC
     return <div className="p-5 text-muted">No leads to show.</div>;
   }
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[800px] border-collapse">
+    <div className="table-scroll">
+      <table className="w-full min-w-[720px] border-collapse sm:min-w-[800px]">
         <thead>
           <tr className="border-b border-[#D9DCE4] bg-[#FAFBFC]">
             {["Lead", "Visa → goal", "Expiry", "First contact", "Source", "Owner", "Pathway value", "Status"].map((h, i) => (

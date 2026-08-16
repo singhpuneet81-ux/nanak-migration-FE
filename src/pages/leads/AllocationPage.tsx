@@ -27,7 +27,7 @@ export default function AllocationPage() {
   return (
     <>
       <div className="mb-5">
-        <h1 className="font-serif text-2xl font-semibold tracking-tight text-navy">Allocation</h1>
+        <h1 className="page-title">Allocation</h1>
         <p className="mt-1 text-[13px] text-muted">Who holds what, against capacity. The RMA rule is enforced by the desk.</p>
       </div>
 

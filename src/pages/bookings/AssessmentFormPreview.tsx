@@ -37,7 +37,7 @@ export default function AssessmentFormPreview() {
   return (
     <>
       <div className="mb-5">
-        <h1 className="font-serif text-2xl font-semibold tracking-tight text-navy">Assessment form (client view)</h1>
+        <h1 className="page-title">Assessment form (client view)</h1>
         <p className="mt-1 text-[13px] text-muted">Pre-consult assessment — 2 minutes for the client, a fully briefed agent for us.</p>
       </div>
 

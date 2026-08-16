@@ -4,7 +4,7 @@ export default function CaptureNetPage() {
   return (
     <>
       <div className="mb-5">
-        <h1 className="font-serif text-2xl font-semibold tracking-tight text-navy">Capture net</h1>
+        <h1 className="page-title">Capture net</h1>
         <p className="mt-1 max-w-xl text-[13px] text-muted">
           Seven traps across the website. Every micro-CTA lands here scored, with a ready-to-send reply.
         </p>

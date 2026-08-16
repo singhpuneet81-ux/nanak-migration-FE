@@ -45,8 +45,8 @@ export default function LeadDrawer({ lead, open, onClose, onUpdated }: Props) {
           open ? "translate-x-0" : "translate-x-full"
         )}
       >
-        <div className="border-b border-line px-5 pb-3 pt-5">
-          <button type="button" className="absolute right-4 top-4 text-2xl text-muted" onClick={onClose}>
+        <div className="sticky top-0 z-10 border-b border-line bg-white px-4 pb-3 pt-4 sm:px-5">
+          <button type="button" className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full text-2xl text-muted hover:bg-surface sm:right-4 sm:top-4" onClick={onClose}>
             ×
           </button>
           <h3 className="pr-8 text-lg font-bold">{lead.name}</h3>

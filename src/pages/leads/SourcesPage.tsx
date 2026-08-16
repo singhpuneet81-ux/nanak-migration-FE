@@ -8,7 +8,7 @@ export default function SourcesPage() {
   return (
     <>
       <div className="mb-5">
-        <h1 className="font-serif text-2xl font-semibold tracking-tight text-navy">Content sources</h1>
+        <h1 className="page-title">Content sources</h1>
         <p className="mt-1 text-[13px] text-muted">What the blog, sidebar, newsletter and CTAs actually produce.</p>
       </div>
 

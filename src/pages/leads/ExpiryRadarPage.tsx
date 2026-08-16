@@ -20,7 +20,7 @@ export default function ExpiryRadarPage() {
   return (
     <>
       <div className="mb-5">
-        <h1 className="font-serif text-2xl font-semibold tracking-tight text-navy">Expiry Radar</h1>
+        <h1 className="page-title">Expiry Radar</h1>
         <p className="mt-1 max-w-xl text-[13px] text-muted">
           Leads sorted by how much runway their visa has left — not by when they enquired.
         </p>

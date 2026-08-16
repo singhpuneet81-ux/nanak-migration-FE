@@ -85,7 +85,7 @@ export default function SchedulePage() {
   return (
     <>
       <div className="mb-5">
-        <h1 className="font-serif text-2xl font-semibold tracking-tight text-navy">Bookings</h1>
+        <h1 className="page-title">Bookings</h1>
         <p className="mt-1 text-[13px] text-muted">Every website booking lands here confirmed, reminded and linked to its lead.</p>
       </div>
 
