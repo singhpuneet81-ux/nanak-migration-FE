@@ -1,4 +1,6 @@
-const API_BASE = (import.meta.env.VITE_API_BASE_URL || "http://localhost:5001/api").replace(/\/$/, "");
+const API_BASE = (
+  import.meta.env.VITE_API_BASE_URL || "https://api.nanakmigration.com.au/api"
+).replace(/\/$/, "");
 
 function getToken() {
   return localStorage.getItem("runway_token");
