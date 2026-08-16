@@ -36,7 +36,7 @@ export default function BookingWidgetPreview() {
   return (
     <>
       <div className="mb-5">
-        <h1 className="text-xl font-bold tracking-tight text-navy">Booking page (client view)</h1>
+        <h1 className="font-serif text-2xl font-semibold tracking-tight text-navy">Booking page (client view)</h1>
         <p className="mt-1 text-[13px] text-muted">What clients see on nanakmigration.com.au/book — book one and watch it land.</p>
       </div>
 
@@ -114,7 +114,7 @@ export default function BookingWidgetPreview() {
             </label>
             <button
               type="button"
-              className="btn-gold w-full rounded-full py-3 text-sm font-semibold"
+              className="w-full rounded-full bg-navy py-3 text-sm font-semibold text-white transition hover:bg-navy-mid disabled:opacity-60"
               disabled={!form.name || !form.email || mut.isPending}
               onClick={() => mut.mutate()}
             >

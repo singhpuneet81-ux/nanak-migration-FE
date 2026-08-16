@@ -8,7 +8,7 @@ export default function CommsQueuePage() {
   return (
     <>
       <div className="mb-5">
-        <h1 className="text-xl font-bold tracking-tight text-navy">Comms queue</h1>
+        <h1 className="font-serif text-2xl font-semibold tracking-tight text-navy">Comms queue</h1>
         <p className="mt-1 text-[13px] text-muted">Automated message chain per booking: confirmation, reminders, follow-up.</p>
       </div>
 

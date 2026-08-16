@@ -48,7 +48,7 @@ export default function AllLeadsPage() {
   return (
     <>
       <div className="mb-5">
-        <h1 className="text-xl font-bold tracking-tight text-navy">All leads</h1>
+        <h1 className="font-serif text-2xl font-semibold tracking-tight text-navy">All leads</h1>
         <p className="mt-1 text-[13px] text-muted">Every enquiry from every form on the website.</p>
       </div>
 

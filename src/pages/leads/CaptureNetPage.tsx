@@ -4,7 +4,7 @@ export default function CaptureNetPage() {
   return (
     <>
       <div className="mb-5">
-        <h1 className="text-xl font-bold tracking-tight text-navy">Capture net</h1>
+        <h1 className="font-serif text-2xl font-semibold tracking-tight text-navy">Capture net</h1>
         <p className="mt-1 max-w-xl text-[13px] text-muted">
           Seven traps across the website. Every micro-CTA lands here scored, with a ready-to-send reply.
         </p>
@@ -20,8 +20,8 @@ export default function CaptureNetPage() {
             ["Rung 3", "WhatsApp nudge", "One tap: Ask about my result."],
             ["Rung 4", "Consult booked", "With the RMA. The only rung that asks for money."],
           ].map(([step, name, desc], i) => (
-            <div key={step} className={`rounded-lg border p-3 ${i === 3 ? "border-gold bg-amber-50/50" : "border-line"}`}>
-              <div className={`text-[10px] font-bold uppercase ${i === 3 ? "text-gold-deep" : "text-muted"}`}>{step}</div>
+            <div key={step} className={`rounded-2xl border p-3 ${i === 3 ? "border-navy bg-lavender/70" : "border-line bg-white"}`}>
+              <div className={`text-[10px] font-bold uppercase ${i === 3 ? "text-navy" : "text-muted"}`}>{step}</div>
               <div className="font-bold">{name}</div>
               <div className="mt-1 text-xs text-muted">{desc}</div>
             </div>

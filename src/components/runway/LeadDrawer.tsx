@@ -52,7 +52,7 @@ export default function LeadDrawer({ lead, open, onClose, onUpdated }: Props) {
           <h3 className="pr-8 text-lg font-bold">{lead.name}</h3>
           <div className="mt-2 flex flex-wrap gap-1.5">
             <span className="code">{lead.subclass || "no visa"}</span>
-            <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-bold", (lead.score ?? 0) >= 70 ? "bg-gold/30" : "bg-gray-100")}>
+            <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-bold", (lead.score ?? 0) >= 70 ? "bg-lavender text-navy" : "bg-surface text-muted")}>
               score {lead.score}
             </span>
             {d != null ? (
@@ -67,16 +67,16 @@ export default function LeadDrawer({ lead, open, onClose, onUpdated }: Props) {
 
         <div className="space-y-0 px-5 py-4">
           {nba && (
-            <section className="mb-4 rounded-lg border border-gold/40 bg-amber-50/50 p-3">
-              <div className="text-sm font-bold">
+            <section className="mb-4 rounded-2xl border border-navy/15 bg-lavender/50 p-3">
+              <div className="text-sm font-bold text-navy">
                 ⚡ {nba.title} <span className="text-[11px] font-normal text-muted">· {nba.ch}</span>
               </div>
               <p className="mt-1 text-xs text-muted">{nba.why}</p>
-              <div className="mt-2 rounded bg-white p-2 text-xs">{nba.wa}</div>
+              <div className="mt-2 rounded-xl bg-white p-2 text-xs">{nba.wa}</div>
               <div className="mt-2 flex gap-2">
                 <button
                   type="button"
-                  className="btn btn-gold text-[11px]"
+                  className="btn btn-pri text-[11px]"
                   onClick={() => {
                     navigator.clipboard?.writeText(nba.wa);
                     toast("Message copied");

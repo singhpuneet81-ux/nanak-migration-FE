@@ -48,7 +48,7 @@ export default function LeadTable({ leads, onRowClick }: { leads: Lead[]; onRowC
                 <div className="font-semibold">
                   {l.name}
                   {(l.score ?? 0) >= 70 && (
-                    <span className="ml-1 rounded-full bg-gold/20 px-1.5 py-px text-[10px] font-bold text-navy">{l.score}</span>
+                    <span className="ml-1 rounded-full bg-lavender px-1.5 py-px text-[10px] font-bold text-navy">{l.score}</span>
                   )}
                 </div>
                 <div className="text-[11px] text-muted">

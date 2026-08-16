@@ -17,7 +17,7 @@ export default function PathwaysPage() {
   return (
     <>
       <div className="mb-5">
-        <h1 className="text-xl font-bold tracking-tight text-navy">Lifetime pathways</h1>
+        <h1 className="font-serif text-2xl font-semibold tracking-tight text-navy">Lifetime pathways</h1>
         <p className="mt-1 text-[13px] text-muted">Each lead priced across their whole migration journey.</p>
       </div>
 

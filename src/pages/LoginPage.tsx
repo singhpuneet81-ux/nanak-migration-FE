@@ -2,6 +2,10 @@ import { useState, type FormEvent } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 
+/** Airport departure hall — journeys abroad (Unsplash) */
+const HERO_IMG =
+  "https://images.unsplash.com/photo-1556388158-158ea11ff1b8?auto=format&fit=crop&w=2400&q=80";
+
 export default function LoginPage() {
   const { user, loading, login } = useAuth();
   const [email, setEmail] = useState("");
@@ -25,40 +29,129 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-surface px-4">
-      <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <div className="text-2xl font-bold text-navy">Nanak Migration</div>
-          <div className="font-mono text-xs uppercase tracking-widest text-gold">Runway · Lead Desk</div>
+    <div className="relative flex min-h-screen overflow-hidden bg-navy">
+      {/* Full-bleed travel background */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${HERO_IMG})` }}
+        aria-hidden
+      />
+      <div
+        className="absolute inset-0 bg-[linear-gradient(105deg,rgba(11,20,64,0.92)_0%,rgba(16,28,85,0.78)_42%,rgba(16,28,85,0.45)_100%)]"
+        aria-hidden
+      />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(245,166,35,0.18),transparent_50%)]" aria-hidden />
+
+      <div className="relative z-10 flex w-full flex-col lg:flex-row">
+        {/* Brand / story panel */}
+        <div className="flex flex-1 flex-col justify-between px-8 py-10 sm:px-12 lg:px-16 lg:py-14">
+          <div>
+            <div className="inline-flex rounded-2xl bg-white/95 px-4 py-3 shadow-card backdrop-blur-sm">
+              <img
+                src="/nanak-migration-logo.png"
+                alt="Nanak Migration Group"
+                className="h-12 w-auto max-w-[260px] object-contain sm:h-14"
+              />
+            </div>
+            <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.16em] text-gold">Registered Migration Agents</p>
+            <h1 className="mt-3 max-w-lg font-serif text-3xl font-semibold leading-[1.15] tracking-tight text-white sm:text-4xl">
+              Your pathway starts here
+            </h1>
+            <p className="mt-4 max-w-md text-base leading-relaxed text-white/75">
+              Pathways across borders — student, skilled, partner and employer visas, guided with care from Australia to
+              home.
+            </p>
+          </div>
+
+          <div className="mt-12 hidden max-w-md lg:block">
+            <div className="rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur-md">
+              <p className="text-sm leading-relaxed text-white/90">
+                “Every journey starts with a clear runway. Your lead desk keeps visa timelines, consults and first contact
+                in one calm place.”
+              </p>
+              <p className="mt-3 text-[11px] font-bold uppercase tracking-wider text-gold">Runway · Lead Desk</p>
+            </div>
+            <div className="mt-8 flex gap-6 text-white/55">
+              <div>
+                <div className="font-serif text-2xl font-semibold text-white">AU</div>
+                <div className="text-[11px]">Onshore & offshore</div>
+              </div>
+              <div className="w-px bg-white/20" />
+              <div>
+                <div className="font-serif text-2xl font-semibold text-white">MARN</div>
+                <div className="text-[11px]">2619467</div>
+              </div>
+              <div className="w-px bg-white/20" />
+              <div>
+                <div className="font-serif text-2xl font-semibold text-white">SLA</div>
+                <div className="text-[11px]">First-contact clock</div>
+              </div>
+            </div>
+          </div>
         </div>
-        <form onSubmit={onSubmit} className="card p-8">
-          <h1 className="text-lg font-bold text-navy">Sign in</h1>
-          <p className="mt-1 text-sm text-muted">Migration CRM admin panel</p>
-          {error && <p className="mt-3 text-sm text-crit">{error}</p>}
-          <label className="mt-6 block text-xs font-semibold">
-            Email
-            <input
-              type="email"
-              required
-              className="mt-1 w-full rounded-lg border border-line px-3 py-2.5 text-sm"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </label>
-          <label className="mt-4 block text-xs font-semibold">
-            Password
-            <input
-              type="password"
-              required
-              className="mt-1 w-full rounded-lg border border-line px-3 py-2.5 text-sm"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </label>
-          <button type="submit" disabled={submitting} className="btn-gold mt-6 w-full rounded-full py-3 text-sm font-semibold">
-            {submitting ? "Signing in…" : "Sign in"}
-          </button>
-        </form>
+
+        {/* Login card */}
+        <div className="flex flex-1 items-center justify-center px-5 pb-12 pt-2 sm:px-10 lg:justify-end lg:px-16 lg:py-14">
+          <form
+            onSubmit={onSubmit}
+            className="w-full max-w-[420px] rounded-3xl border border-white/40 bg-white/95 p-8 shadow-[0_24px_80px_rgba(11,20,64,0.35)] backdrop-blur-xl sm:p-10"
+          >
+            <div className="mb-6 flex justify-center lg:hidden">
+              <img
+                src="/nanak-migration-logo.png"
+                alt="Nanak Migration Group"
+                className="h-12 w-auto max-w-[240px] object-contain"
+              />
+            </div>
+            <div className="mb-1 text-[11px] font-bold uppercase tracking-[0.14em] text-gold">Staff access</div>
+            <h2 className="font-serif text-2xl font-semibold text-navy">Welcome back</h2>
+            <p className="mt-1.5 text-sm text-muted">Sign in to the Nanak Migration Runway desk.</p>
+
+            {error && (
+              <div className="mt-4 rounded-xl border border-red-100 bg-red-50 px-3 py-2 text-sm text-crit">{error}</div>
+            )}
+
+            <label className="mt-7 block text-xs font-semibold text-navy">
+              Email
+              <input
+                type="email"
+                required
+                autoComplete="username"
+                placeholder="you@nanakmigration.com.au"
+                className="mt-1.5 w-full rounded-full border border-line bg-surface px-4 py-3 text-sm text-ink outline-none transition placeholder:text-muted/60 focus:border-navy/35 focus:bg-white focus:ring-4 focus:ring-navy/10"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </label>
+
+            <label className="mt-4 block text-xs font-semibold text-navy">
+              Password
+              <input
+                type="password"
+                required
+                autoComplete="current-password"
+                placeholder="••••••••"
+                className="mt-1.5 w-full rounded-full border border-line bg-surface px-4 py-3 text-sm text-ink outline-none transition placeholder:text-muted/60 focus:border-navy/35 focus:bg-white focus:ring-4 focus:ring-navy/10"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </label>
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="mt-7 w-full rounded-full bg-navy py-3.5 text-sm font-semibold text-white shadow-soft transition hover:bg-navy-mid hover:shadow-card disabled:opacity-60"
+            >
+              {submitting ? "Signing in…" : "Sign in to Runway"}
+            </button>
+
+            <p className="mt-6 text-center text-[11px] leading-relaxed text-muted">
+              Navpreet Aulakh · Registered Migration Agent
+              <br />
+              MARN 2619467 · Nanak Migration Group
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );

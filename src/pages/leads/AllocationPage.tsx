@@ -27,11 +27,11 @@ export default function AllocationPage() {
   return (
     <>
       <div className="mb-5">
-        <h1 className="text-xl font-bold tracking-tight text-navy">Allocation</h1>
+        <h1 className="font-serif text-2xl font-semibold tracking-tight text-navy">Allocation</h1>
         <p className="mt-1 text-[13px] text-muted">Who holds what, against capacity. The RMA rule is enforced by the desk.</p>
       </div>
 
-      <div className="mb-4 rounded-r-lg border-l-[3px] border-gold bg-amber-50/60 px-4 py-3 text-xs leading-relaxed">
+      <div className="mb-4 rounded-r-2xl border-l-[3px] border-navy bg-lavender/70 px-4 py-3 text-xs leading-relaxed">
         <b>The one rule that cannot bend:</b> only the Registered Migration Agent gives immigration assistance. Intake books
         consults — the moment a matter needs advice, it moves to Navpreet.
       </div>

@@ -21,7 +21,7 @@ export default function ExpiryRadar({
         <div className="flex flex-wrap gap-3 text-[11px] text-muted">
           <span><i className="mr-1 inline-block h-2 w-2 rounded-full bg-crit" />Critical &lt;90d</span>
           <span><i className="mr-1 inline-block h-2 w-2 rounded-full bg-gold" />Urgent 90–180d</span>
-          <span><i className="mr-1 inline-block h-2 w-2 rounded-full bg-blue-600" />Window 180–365d</span>
+          <span><i className="mr-1 inline-block h-2 w-2 rounded-full bg-navy-soft" />Window 180–365d</span>
           <span><i className="mr-1 inline-block h-2 w-2 rounded-full bg-gray-400" />12m+ runway</span>
         </div>
       </div>
@@ -29,7 +29,7 @@ export default function ExpiryRadar({
         <div className="absolute inset-x-0 bottom-6 top-0">
           <div className="absolute bottom-6 top-0 bg-gradient-to-r from-red-500/10 to-red-500/5" style={{ left: 0, width: `${px(90)}%` }} />
           <div className="absolute bottom-6 top-0 bg-gold/10" style={{ left: `${px(90)}%`, width: `${px(180) - px(90)}%` }} />
-          <div className="absolute bottom-6 top-0 bg-blue-500/5" style={{ left: `${px(180)}%`, width: `${px(365) - px(180)}%` }} />
+          <div className="absolute bottom-6 top-0 bg-lavender" style={{ left: `${px(180)}%`, width: `${px(365) - px(180)}%` }} />
         </div>
         <span className="absolute -top-1 left-0 font-mono text-[10px] font-semibold text-navy">TODAY</span>
         {chips.map((l, i) => {
@@ -45,7 +45,7 @@ export default function ExpiryRadar({
                 "absolute flex -translate-x-1/2 items-center gap-1 rounded-full border bg-white px-2 py-0.5 text-[11px] font-semibold shadow-sm hover:shadow-md",
                 band === "crit" && "border-crit",
                 band === "urgent" && "border-gold",
-                band === "window" && "border-blue-500"
+                band === "window" && "border-navy-soft"
               )}
               style={{ left: `${left}%`, top }}
               onClick={() => onChipClick(l._id)}
@@ -56,8 +56,8 @@ export default function ExpiryRadar({
                   "h-2 w-2 rounded-full",
                   band === "crit" && "bg-crit",
                   band === "urgent" && "bg-gold",
-                  band === "window" && "bg-blue-600",
-                  !["crit", "urgent", "window"].includes(band) && "bg-gray-400"
+                  band === "window" && "bg-navy-soft",
+                  !["crit", "urgent", "window"].includes(band) && "bg-muted"
                 )}
               />
               {l.name.split(" ")[0]}{" "}

@@ -19,7 +19,7 @@ export default function ExportCentrePage() {
   return (
     <>
       <div className="mb-5">
-        <h1 className="text-xl font-bold tracking-tight text-navy">Export centre</h1>
+        <h1 className="font-serif text-2xl font-semibold tracking-tight text-navy">Export centre</h1>
         <p className="mt-1 text-[13px] text-muted">Consent-gated marketing segments from visa data.</p>
       </div>
 
@@ -48,7 +48,7 @@ export default function ExportCentrePage() {
         ))}
       </div>
 
-      <div className="mt-4 rounded-r-lg border-l-[3px] border-navy bg-blue-50/50 px-4 py-3 text-xs leading-relaxed">
+      <div className="mt-4 rounded-r-2xl border-l-[3px] border-navy bg-lavender/60 px-4 py-3 text-xs leading-relaxed">
         <b>Compliance is welded on.</b> Every outbound template must carry: Navpreet Aulakh, Registered Migration Agent,
         MARN 2619467 · no outcome guarantees · unsubscribe in one click · Australian English.
       </div>

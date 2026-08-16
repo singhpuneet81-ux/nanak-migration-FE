@@ -44,13 +44,17 @@ export default function RunwayLayout() {
   const todayBk = bk?.today ?? 0;
 
   return (
-    <div className="runway-shell flex min-h-screen">
-      <aside className="runway-side fixed bottom-0 left-0 top-0 z-20 flex w-56 flex-col bg-navy text-white">
-        <div className="border-b border-white/10 px-5 pb-4 pt-6">
-          <div className="text-base font-bold tracking-tight">Nanak Migration</div>
-          <div className="font-mono text-[10.5px] uppercase tracking-widest text-gold">Runway · Lead Desk</div>
+    <div className="runway-shell flex min-h-screen bg-white">
+      <aside className="runway-side fixed bottom-0 left-0 top-0 z-20 flex w-60 flex-col border-r border-line bg-white">
+        <div className="border-b border-line px-4 pb-4 pt-5">
+          <img
+            src="/nanak-migration-logo.png"
+            alt="Nanak Migration Group"
+            className="h-12 w-auto max-w-full object-contain object-left"
+          />
+          <div className="eyebrow mt-2.5">Runway · Lead Desk</div>
         </div>
-        <div className="px-5 pb-1 pt-4 text-[10px] font-bold uppercase tracking-widest text-white/40">Modules</div>
+        <div className="px-5 pb-1 pt-4 text-[10px] font-bold uppercase tracking-widest text-muted">Modules</div>
         <nav className="runway-nav flex-1">
           {MODULES.map((m) =>
             m.live ? (
@@ -58,43 +62,44 @@ export default function RunwayLayout() {
                 key={m.id}
                 type="button"
                 className={cn(
-                  "flex w-full items-center gap-2 border-l-[3px] border-transparent px-5 py-2 text-left text-[13px] font-medium text-white/70 hover:bg-white/5 hover:text-white",
-                  ((m.id === "leads" && !isBookings) || (m.id === "bookings" && isBookings)) && "runway-nav-on border-gold bg-white/10 font-semibold text-white"
+                  "flex w-full items-center gap-2 border-l-[3px] border-transparent px-5 py-2.5 text-left text-[13px] font-medium text-muted transition hover:bg-lavender/60 hover:text-navy",
+                  ((m.id === "leads" && !isBookings) || (m.id === "bookings" && isBookings)) &&
+                    "runway-nav-on border-navy bg-lavender font-semibold text-navy"
                 )}
                 onClick={() => nav(m.base!)}
               >
                 {m.label}
                 {m.id === "leads" && crit > 0 && (
-                  <span className="ml-auto rounded-full bg-gold px-1.5 font-mono text-[10px] font-bold text-navy">{crit}</span>
+                  <span className="ml-auto rounded-full bg-navy px-1.5 font-mono text-[10px] font-bold text-white">{crit}</span>
                 )}
                 {m.id === "bookings" && todayBk > 0 && (
-                  <span className="ml-auto rounded-full bg-gold px-1.5 font-mono text-[10px] font-bold text-navy">{todayBk}</span>
+                  <span className="ml-auto rounded-full bg-navy px-1.5 font-mono text-[10px] font-bold text-white">{todayBk}</span>
                 )}
               </button>
             ) : (
               <button
                 key={m.id}
                 type="button"
-                className="flex w-full cursor-default items-center px-5 py-2 text-left text-[13px] text-white/40"
+                className="flex w-full cursor-default items-center px-5 py-2.5 text-left text-[13px] text-muted/50"
                 onClick={() => alert(`${m.label} — next module on the build list`)}
               >
                 {m.label}
-                <span className="ml-auto rounded border border-white/20 px-1 font-mono text-[9px] uppercase">soon</span>
+                <span className="ml-auto rounded border border-line px-1 font-mono text-[9px] uppercase text-muted">soon</span>
               </button>
             )
           )}
         </nav>
-        <div className="border-t border-white/10 px-5 py-3 text-[10.5px] leading-relaxed text-white/55">
-          <b className="text-white/80">{user?.name}</b>
+        <div className="border-t border-line px-5 py-3 text-[10.5px] leading-relaxed text-muted">
+          <b className="text-navy">{user?.name}</b>
           <br />
           {user?.email}
         </div>
-        <button type="button" className="mx-5 mb-4 text-left text-[11px] text-white/50 hover:text-white" onClick={logout}>
+        <button type="button" className="mx-5 mb-4 text-left text-[11px] font-semibold text-muted hover:text-navy" onClick={logout}>
           Sign out
         </button>
       </aside>
 
-      <main className="runway-main ml-56 flex-1 max-w-[1220px] px-8 pb-16 pt-7">
+      <main className="runway-main ml-60 flex-1 max-w-[1220px] bg-surface/40 px-8 pb-16 pt-7">
         <div className="subtabs">
           {(isBookings ? BOOKING_TABS : LEAD_TABS).map(([id, label]) => (
             <NavLink
@@ -104,10 +109,10 @@ export default function RunwayLayout() {
             >
               {label}
               {id === "radar" && crit > 0 && (
-                <span className="ml-1 rounded-full bg-gold px-1.5 font-mono text-[10px] font-bold text-navy">{crit}</span>
+                <span className="ml-1 rounded-full bg-navy px-1.5 font-mono text-[10px] font-bold text-white">{crit}</span>
               )}
               {id === "team" && (radar?.counts.unalloc ?? 0) > 0 && (
-                <span className="ml-1 rounded-full bg-gray-200 px-1.5 font-mono text-[10px] text-muted">{radar?.counts.unalloc}</span>
+                <span className="ml-1 rounded-full bg-lavender px-1.5 font-mono text-[10px] text-navy">{radar?.counts.unalloc}</span>
               )}
             </NavLink>
           ))}
@@ -116,7 +121,7 @@ export default function RunwayLayout() {
       </main>
       <div
         id="runway-toast"
-        className="pointer-events-none fixed bottom-6 left-1/2 z-[90] -translate-x-1/2 translate-y-20 rounded-lg bg-navy px-4 py-2.5 text-[13px] font-semibold text-white opacity-0 transition-all duration-200 [&.show]:translate-y-0 [&.show]:opacity-100"
+        className="pointer-events-none fixed bottom-6 left-1/2 z-[90] -translate-x-1/2 translate-y-20 rounded-full bg-navy px-5 py-2.5 text-[13px] font-semibold text-white opacity-0 shadow-card transition-all duration-200 [&.show]:translate-y-0 [&.show]:opacity-100"
       />
     </div>
   );
