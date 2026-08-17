@@ -21,13 +21,17 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 }
 
 export async function login(email: string, password: string) {
+  localStorage.removeItem("runway_token");
+
   const res = await fetch(`${API_BASE}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email: email.trim(), password }),
   });
-  const json = await res.json();
-  if (!res.ok) throw new Error(json.message || "Login failed");
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(json.message || (res.status === 401 ? "Invalid email or password" : `Login failed (${res.status})`));
+  }
   return json.data as { token: string; user: { id: string; name: string; email: string; role: string } };
 }
 

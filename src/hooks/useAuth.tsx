@@ -23,7 +23,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     getMe()
       .then((u) => setUser(u))
-      .catch(() => localStorage.removeItem("runway_token"))
+      .catch(() => {
+        localStorage.removeItem("runway_token");
+        setUser(null);
+      })
       .finally(() => setLoading(false));
   }, []);
 
