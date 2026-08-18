@@ -67,8 +67,8 @@ export default function RunwayLayout() {
             to={m.base!}
             className={() =>
               cn(
-                "flex w-full items-center gap-2 border-l-[3px] border-transparent px-5 py-2.5 text-left text-[13px] font-medium text-white/78 transition hover:bg-white/8 hover:text-white",
-                activeModule === m.id && "runway-nav-on border-gold bg-white/12 font-semibold text-white"
+                "flex w-full items-center gap-2 border-l-[3px] border-transparent px-5 py-2.5 text-left text-[13px] font-medium !text-white/80 no-underline transition hover:bg-white/8 hover:!text-white",
+                activeModule === m.id && "runway-nav-on border-gold bg-white/12 font-semibold !text-white"
               )
             }
             onClick={() => setMenuOpen(false)}
