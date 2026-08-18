@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/hooks/useAuth";
@@ -35,42 +36,62 @@ const qc = new QueryClient({
   },
 });
 
+/** Admin login + CRM only. Public WordPress iframes never enter this tree. */
+function AuthedShell({ children }: { children: ReactNode }) {
+  return <AuthProvider>{children}</AuthProvider>;
+}
+
+function AdminGate() {
+  return (
+    <AuthedShell>
+      <ProtectedRoute />
+    </AuthedShell>
+  );
+}
+
 export default function App() {
   return (
     <QueryClientProvider client={qc}>
-      <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/herosection_chatbot" element={<HeroSectionChatbotPage />} />
-            <Route path="/herosection-chatbot" element={<Navigate to="/herosection_chatbot" replace />} />
-            <Route path="/immigration_newsletter" element={<ImmigrationNewsletterPage />} />
-            <Route path="/immigration-newsletter" element={<Navigate to="/immigration_newsletter" replace />} />
-            <Route element={<ProtectedRoute />}>
-              <Route element={<RunwayLayout />}>
-                <Route path="/" element={<Navigate to="/leads/radar" replace />} />
-                <Route path="/leads/radar" element={<ExpiryRadarPage />} />
-                <Route path="/leads/net" element={<CaptureNetPage />} />
-                <Route path="/leads/all" element={<AllLeadsPage />} />
-                <Route path="/leads/path" element={<PathwaysPage />} />
-                <Route path="/leads/src" element={<SourcesPage />} />
-                <Route path="/leads/team" element={<AllocationPage />} />
-                <Route path="/leads/exp" element={<ExportCentrePage />} />
-                <Route path="/bookings/sched" element={<SchedulePage />} />
-                <Route path="/bookings/comms" element={<CommsQueuePage />} />
-                <Route path="/bookings/widget" element={<BookingWidgetPreview />} />
-                <Route path="/bookings/oaf" element={<AssessmentFormPreview />} />
-                <Route path="/matters" element={<MattersPage />} />
-                <Route path="/clients" element={<ClientsPage />} />
-                <Route path="/documents" element={<DocumentsPage />} />
-                <Route path="/compliance" element={<CompliancePage />} />
-                <Route path="/reports" element={<ReportsPage />} />
-              </Route>
+      <BrowserRouter>
+        <Routes>
+          {/* Public embeds — no login, no JWT, no admin chrome */}
+          <Route path="/herosection_chatbot" element={<HeroSectionChatbotPage />} />
+          <Route path="/herosection-chatbot" element={<HeroSectionChatbotPage />} />
+          <Route path="/immigration_newsletter" element={<ImmigrationNewsletterPage />} />
+          <Route path="/immigration-newsletter" element={<ImmigrationNewsletterPage />} />
+
+          <Route
+            path="/login"
+            element={
+              <AuthedShell>
+                <LoginPage />
+              </AuthedShell>
+            }
+          />
+
+          <Route element={<AdminGate />}>
+            <Route element={<RunwayLayout />}>
+              <Route path="/" element={<Navigate to="/leads/radar" replace />} />
+              <Route path="/leads/radar" element={<ExpiryRadarPage />} />
+              <Route path="/leads/net" element={<CaptureNetPage />} />
+              <Route path="/leads/all" element={<AllLeadsPage />} />
+              <Route path="/leads/path" element={<PathwaysPage />} />
+              <Route path="/leads/src" element={<SourcesPage />} />
+              <Route path="/leads/team" element={<AllocationPage />} />
+              <Route path="/leads/exp" element={<ExportCentrePage />} />
+              <Route path="/bookings/sched" element={<SchedulePage />} />
+              <Route path="/bookings/comms" element={<CommsQueuePage />} />
+              <Route path="/bookings/widget" element={<BookingWidgetPreview />} />
+              <Route path="/bookings/oaf" element={<AssessmentFormPreview />} />
+              <Route path="/matters" element={<MattersPage />} />
+              <Route path="/clients" element={<ClientsPage />} />
+              <Route path="/documents" element={<DocumentsPage />} />
+              <Route path="/compliance" element={<CompliancePage />} />
+              <Route path="/reports" element={<ReportsPage />} />
             </Route>
-            <Route path="*" element={<Navigate to="/leads/radar" replace />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </QueryClientProvider>
   );
 }

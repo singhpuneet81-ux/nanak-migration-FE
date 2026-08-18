@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState, type FormEvent } from "react";
-import { submitPathwayIntake } from "@/lib/api";
+import { submitPublicIntake } from "@/lib/publicIntake";
 
 type GoalId = "work" | "study" | "family" | "business" | "visit";
 type LocId = "onshore" | "offshore";
@@ -246,7 +246,7 @@ export default function HeroSectionChatbotPage() {
     setErr("");
     const summary = `${goal.label} · ${loc.label}${job ? ` · ${job.label}` : ""} → ${pathway.title} ${pathway.code}`;
     try {
-      await submitPathwayIntake({
+      await submitPublicIntake({
         widget: "herosection_chatbot",
         page: parentPage(),
         company_website: hp,

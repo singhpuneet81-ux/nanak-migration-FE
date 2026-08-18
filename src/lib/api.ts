@@ -1,3 +1,5 @@
+import { submitPublicIntake } from "@/lib/publicIntake";
+
 const API_BASE = (
   import.meta.env.VITE_API_BASE_URL || "https://api.nanakmigration.com.au/api"
 ).replace(/\/$/, "");
@@ -303,12 +305,5 @@ export function fday(ts: string) {
 }
 
 export async function submitPathwayIntake(body: Record<string, unknown>) {
-  const res = await fetch(`${API_BASE}/intake`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-  const json = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(json.message || `Request failed (${res.status})`);
-  return json.data as { ok: boolean; created?: boolean };
+  return submitPublicIntake(body);
 }
