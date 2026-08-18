@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getRadar, getBookings } from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
 const MODULES = [
-  { id: "leads", label: "Leads", live: true, base: "/leads" },
-  { id: "bookings", label: "Bookings", live: true, base: "/bookings" },
+  { id: "leads", label: "Leads", live: true, base: "/leads/radar", match: "/leads" },
+  { id: "bookings", label: "Bookings", live: true, base: "/bookings/sched", match: "/bookings" },
   { id: "matters", label: "Matters", live: true, base: "/matters" },
   { id: "clients", label: "Clients", live: true, base: "/clients" },
   { id: "docs", label: "Documents & forms", live: true, base: "/documents" },
@@ -35,14 +35,14 @@ const BOOKING_TABS = [
 export default function RunwayLayout() {
   const { user, logout } = useAuth();
   const loc = useLocation();
-  const nav = useNavigate();
   const isBookings = loc.pathname.startsWith("/bookings");
   const isLeads = loc.pathname.startsWith("/leads") || loc.pathname === "/";
-  const activeModule = MODULES.find((m) => loc.pathname.startsWith(m.base || "___"))?.id || (isLeads ? "leads" : "");
+  const activeModule =
+    MODULES.find((m) => loc.pathname.startsWith((m as { match?: string }).match || m.base || "___"))?.id || (isLeads ? "leads" : "");
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const { data: radar } = useQuery({ queryKey: ["radar"], queryFn: getRadar, refetchInterval: 60000 });
-  const { data: bk } = useQuery({ queryKey: ["bookings"], queryFn: getBookings, refetchInterval: 60000 });
+  const { data: radar } = useQuery({ queryKey: ["radar"], queryFn: getRadar, refetchInterval: 60000, staleTime: 60000 });
+  const { data: bk } = useQuery({ queryKey: ["bookings"], queryFn: getBookings, refetchInterval: 60000, staleTime: 60000 });
 
   const crit = radar?.counts.crit ?? 0;
   const todayBk = bk?.today ?? 0;
@@ -58,23 +58,20 @@ export default function RunwayLayout() {
     };
   }, [menuOpen]);
 
-  function goModule(base: string) {
-    nav(base);
-    setMenuOpen(false);
-  }
-
   const moduleButtons = (
     <>
       {MODULES.map((m) =>
         m.live ? (
-          <button
+          <NavLink
             key={m.id}
-            type="button"
-            className={cn(
-              "flex w-full items-center gap-2 border-l-[3px] border-transparent px-5 py-2.5 text-left text-[13px] font-medium text-white/78 transition hover:bg-white/8 hover:text-white",
-              activeModule === m.id && "runway-nav-on border-gold bg-white/12 font-semibold text-white"
-            )}
-            onClick={() => goModule(m.base!)}
+            to={m.base!}
+            className={() =>
+              cn(
+                "flex w-full items-center gap-2 border-l-[3px] border-transparent px-5 py-2.5 text-left text-[13px] font-medium text-white/78 transition hover:bg-white/8 hover:text-white",
+                activeModule === m.id && "runway-nav-on border-gold bg-white/12 font-semibold text-white"
+              )
+            }
+            onClick={() => setMenuOpen(false)}
           >
             {m.label}
             {m.id === "leads" && crit > 0 && (
@@ -83,7 +80,7 @@ export default function RunwayLayout() {
             {m.id === "bookings" && todayBk > 0 && (
               <span className="ml-auto rounded-full bg-gold px-1.5 font-mono text-[10px] font-bold text-navy">{todayBk}</span>
             )}
-          </button>
+          </NavLink>
         ) : null
       )}
     </>
@@ -175,21 +172,22 @@ export default function RunwayLayout() {
       {/* Mobile quick module chips */}
       <div className="flex gap-2 overflow-x-auto border-b border-line bg-surface/60 px-3 py-2 lg:hidden">
         {MODULES.map((m) => (
-          <button
+          <NavLink
             key={m.id}
-            type="button"
-            className={cn(
-              "shrink-0 rounded-full border px-3 py-1.5 text-[12px] font-semibold",
-              activeModule === m.id
-                ? "border-navy bg-navy text-white"
-                : "border-line bg-white text-navy"
-            )}
-            onClick={() => goModule(m.base!)}
+            to={m.base!}
+            className={() =>
+              cn(
+                "shrink-0 rounded-full border px-3 py-1.5 text-[12px] font-semibold",
+                activeModule === m.id
+                  ? "border-navy bg-navy text-white"
+                  : "border-line bg-white text-navy"
+              )
+            }
           >
             {m.label}
             {m.id === "leads" && crit > 0 ? ` · ${crit}` : ""}
             {m.id === "bookings" && todayBk > 0 ? ` · ${todayBk}` : ""}
-          </button>
+          </NavLink>
         ))}
       </div>
 

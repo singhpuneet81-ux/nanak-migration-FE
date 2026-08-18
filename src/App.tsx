@@ -22,7 +22,15 @@ import CompliancePage from "@/pages/CompliancePage";
 import ReportsPage from "@/pages/ReportsPage";
 
 const qc = new QueryClient({
-  defaultOptions: { queries: { staleTime: 15000, retry: 1 } },
+  defaultOptions: {
+    queries: {
+      staleTime: 60000,
+      gcTime: 10 * 60000,
+      retry: 1,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  },
 });
 
 export default function App() {
