@@ -30,14 +30,43 @@
     return 1200;
   }
 
-  function applyToFrame(frame, height, cap) {
+  function heroMaxWidth() {
+    return window.innerWidth >= 768 ? "440px" : "100%";
+  }
+
+  function applyHeroLayout(frame) {
+    var src = frameSrc(frame);
+    if (!isHeroChat(src)) return;
+    var mw = heroMaxWidth();
+    frame.style.setProperty("width", "100%", "important");
+    frame.style.setProperty("max-width", mw, "important");
+    frame.style.setProperty("min-width", "0", "important");
+    if (window.innerWidth >= 768) {
+      frame.style.setProperty("margin-left", "auto", "important");
+      frame.style.setProperty("margin-right", "0", "important");
+    } else {
+      frame.style.removeProperty("margin-left");
+      frame.style.removeProperty("margin-right");
+    }
+  }
+
+  function applyToFrame(frame, height, cap, data) {
     var h = Number(height);
     if (!h || h < 40) return;
     if (cap && h > cap) h = cap;
     frame.dataset.nanakSized = "1";
-    frame.style.setProperty("width", "100%", "important");
-    frame.style.setProperty("max-width", "100%", "important");
-    frame.style.setProperty("min-width", "0", "important");
+    var src = frameSrc(frame);
+    var hero = isHeroChat(src) || (data && data.source === "herosection_chatbot");
+    if (hero) {
+      applyHeroLayout(frame);
+    } else {
+      frame.style.setProperty("width", "100%", "important");
+      frame.style.setProperty("max-width", "100%", "important");
+      frame.style.setProperty("min-width", "0", "important");
+    }
+    if (hero && data && data.suggestedWidth && window.innerWidth >= 768) {
+      frame.style.setProperty("max-width", data.suggestedWidth + "px", "important");
+    }
     frame.style.setProperty("display", "block", "important");
     frame.style.setProperty("overflow", "hidden", "important");
     frame.style.setProperty("min-height", "0", "important");
@@ -63,7 +92,7 @@
           isHeroChat(src) ||
           isNewsletter(src);
         if (match) {
-          applyToFrame(frame, data.height, ceilingFor(data, src));
+          applyToFrame(frame, data.height, ceilingFor(data, src), data);
         }
       } catch (_) {}
     });
@@ -72,6 +101,7 @@
   window.addEventListener("resize", function () {
     document.querySelectorAll("iframe[data-nanak-sized='1']").forEach(function (frame) {
       try {
+        applyHeroLayout(frame);
         if (frame.contentWindow && frame.contentWindow.postMessage) {
           frame.contentWindow.postMessage({ type: "nanak-embed-request-resize" }, "*");
         }

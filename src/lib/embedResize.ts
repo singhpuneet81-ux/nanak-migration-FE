@@ -12,12 +12,15 @@ export function postEmbedResize(el: HTMLElement | null, source: EmbedSource) {
   const absoluteMax = source === "immigration_newsletter" ? 520 : 1200;
   const height = Math.min(raw + 4, absoluteMax);
 
+  const suggestedWidth = source === "herosection_chatbot" ? 440 : undefined;
+
   const payload = {
     type: "nanak-embed-resize",
     height,
     source,
     compact: true,
     maxHeight: absoluteMax,
+    ...(suggestedWidth ? { suggestedWidth } : {}),
   };
 
   try {

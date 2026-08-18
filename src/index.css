@@ -212,30 +212,38 @@ html.pc-framed body.pc-framed {
   background: transparent !important;
   overflow: hidden !important;
   max-height: none !important;
+  width: 100%;
+  box-sizing: border-box;
 }
 .pc-shell {
   margin: 0;
   padding: 0;
   display: block;
   font-family: "Instrument Sans", "DM Sans", system-ui, sans-serif;
+  box-sizing: border-box;
 }
 .pc-shell-framed {
   background: transparent;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
 }
 .pc-card {
   width: 100%;
-  max-width: 460px;
+  max-width: 440px;
   margin: 0 auto;
   background: #f7f6f2;
-  border-radius: 24px;
-  box-shadow: 0 30px 70px rgba(5, 10, 28, 0.55);
+  border-radius: 22px;
+  box-shadow: 0 24px 56px rgba(5, 10, 28, 0.42);
   overflow: hidden;
   color: #0d1735;
+  box-sizing: border-box;
 }
 .pc-shell-framed .pc-card {
-  max-width: none;
+  max-width: 100%;
   width: 100%;
-  box-shadow: 0 20px 50px rgba(5, 10, 28, 0.35);
+  border-radius: 20px;
+  box-shadow: 0 16px 40px rgba(5, 10, 28, 0.28);
 }
 .pc-head {
   background: #fff;
@@ -359,11 +367,16 @@ html.pc-framed body.pc-framed {
   display: flex;
   flex-direction: column;
   gap: 11px;
-  min-height: 200px;
+  min-height: 180px;
   max-height: min(400px, 62vh);
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #dde1ec transparent;
+}
+html.pc-framed .pc-chat {
+  max-height: none;
+  overflow: visible;
+  min-height: 0;
 }
 .pc-msg {
   max-width: 88%;
@@ -686,26 +699,53 @@ html.pc-framed body.pc-framed {
   color: #1b2b5e;
 }
 
+@media (max-width: 768px) {
+  .pc-shell-framed {
+    max-width: 100%;
+  }
+  .pc-shell-framed .pc-card {
+    border-radius: 18px;
+    box-shadow: 0 12px 32px rgba(5, 10, 28, 0.22);
+  }
+}
+
 @media (max-width: 640px) {
   .pc-card {
-    border-radius: 20px;
+    border-radius: 18px;
+    max-width: 100%;
   }
   .pc-head {
     padding: 12px 14px 10px;
     flex-wrap: wrap;
+    gap: 8px;
   }
   .pc-head h2 {
     font-size: 17px;
+    flex: 1 1 140px;
   }
   .pc-badge {
+    font-size: 8px;
+    padding: 4px 8px;
+    letter-spacing: 0.08em;
+  }
+  .pc-runway {
+    padding: 10px 14px 12px;
+  }
+  .pc-runway-labels {
     font-size: 8.5px;
   }
   .pc-chat {
     max-height: min(420px, 65vh);
     padding: 14px 12px 12px;
+    gap: 10px;
+  }
+  html.pc-framed .pc-chat {
+    max-height: none;
   }
   .pc-msg {
     font-size: 14px;
+    max-width: 92%;
+    padding: 11px 13px;
   }
   .pc-q {
     font-size: 15.5px;
@@ -713,15 +753,26 @@ html.pc-framed body.pc-framed {
   .pc-opt {
     font-size: 14px;
     min-height: 44px;
+    padding: 12px 13px 12px 15px;
   }
   .pc-summary-head h3 {
     font-size: 18px;
+  }
+  .pc-disc {
+    padding: 10px 14px 12px;
+    font-size: 10px;
+    line-height: 1.5;
   }
 }
 
 @media (max-width: 380px) {
   .pc-head h2 {
-    font-size: 16px;
+    font-size: 15.5px;
+  }
+  .pc-badge {
+    width: 100%;
+    text-align: center;
+    white-space: normal;
   }
   .pc-brief-row {
     flex-direction: column;
@@ -729,6 +780,17 @@ html.pc-framed body.pc-framed {
   }
   .pc-brief-row .v {
     text-align: left;
+  }
+  .pc-cta {
+    font-size: 15px;
+    padding: 14px 16px;
+  }
+}
+
+@media (min-width: 769px) {
+  html.pc-framed .pc-shell-framed {
+    margin-left: auto;
+    margin-right: 0;
   }
 }
 
