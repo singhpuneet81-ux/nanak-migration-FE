@@ -1,9 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
 import { getSources, fm } from "@/lib/api";
+import { PaginationBar, usePagination } from "@/components/runway/Pagination";
+import { ListLoaderCard } from "@/components/runway/ListLoader";
 
 export default function SourcesPage() {
-  const { data } = useQuery({ queryKey: ["sources"], queryFn: getSources });
-  if (!data) return <div className="text-muted">Loading sources…</div>;
+  const { data, isLoading } = useQuery({ queryKey: ["sources"], queryFn: getSources });
+  const sourcePager = usePagination(data?.sources ?? []);
+  const articlePager = usePagination(data?.articles ?? []);
+  if (isLoading || !data) {
+    return (
+      <>
+        <div className="mb-5">
+          <h1 className="page-title">Content sources</h1>
+          <p className="mt-1 text-[13px] text-muted">What the blog, sidebar, newsletter and CTAs actually produce.</p>
+        </div>
+        <ListLoaderCard label="Loading sources…" />
+      </>
+    );
+  }
 
   return (
     <>
@@ -12,7 +26,7 @@ export default function SourcesPage() {
         <p className="mt-1 text-[13px] text-muted">What the blog, sidebar, newsletter and CTAs actually produce.</p>
       </div>
 
-      <div className="card mb-4 overflow-x-auto">
+      <div className="card mb-4 overflow-hidden">
         <div className="px-5 pt-4">
           <h2 className="text-sm font-bold">Which content actually produces clients</h2>
         </div>
@@ -27,7 +41,7 @@ export default function SourcesPage() {
             </tr>
           </thead>
           <tbody>
-            {data.sources.map((s) => (
+            {sourcePager.slice.map((s) => (
               <tr key={s.source} className="border-b border-line">
                 <td className="px-3 py-2 font-semibold">{s.source}</td>
                 <td className="px-3 py-2 text-right font-mono font-semibold">{s.leads}</td>
@@ -42,9 +56,10 @@ export default function SourcesPage() {
             ))}
           </tbody>
         </table>
+        <PaginationBar {...sourcePager} noun="sources" />
       </div>
 
-      <div className="card overflow-x-auto">
+      <div className="card overflow-hidden">
         <div className="px-5 pt-4">
           <h2 className="text-sm font-bold">Top articles by lead capture</h2>
         </div>
@@ -58,7 +73,7 @@ export default function SourcesPage() {
           </thead>
           <tbody>
             {data.articles.length ? (
-              data.articles.map((a) => (
+              articlePager.slice.map((a) => (
                 <tr key={a.article} className="border-b border-line">
                   <td className="px-3 py-2">{a.article}</td>
                   <td className="px-3 py-2 text-right font-mono font-semibold">{a.leads}</td>
@@ -74,6 +89,7 @@ export default function SourcesPage() {
             )}
           </tbody>
         </table>
+        <PaginationBar {...articlePager} noun="articles" />
       </div>
     </>
   );

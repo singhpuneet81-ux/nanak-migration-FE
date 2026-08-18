@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createClient, getClients, updateClient, fdate } from "@/lib/api";
+import { PaginationBar, usePagination } from "@/components/runway/Pagination";
+import ListLoader from "@/components/runway/ListLoader";
 import { toast } from "@/lib/utils";
 
 export default function ClientsPage() {
   const [search, setSearch] = useState("");
   const qc = useQueryClient();
-  const { data, isLoading } = useQuery({ queryKey: ["clients", search], queryFn: () => getClients(search ? { search } : {}) });
+  const { data, isLoading, isFetching } = useQuery({ queryKey: ["clients", search], queryFn: () => getClients(search ? { search } : {}) });
+  const listLoading = isLoading || (isFetching && !data);
+  const pager = usePagination(data?.clients ?? []);
+  useEffect(() => {
+    pager.reset();
+  }, [search, pager.reset]);
 
   const add = useMutation({
     mutationFn: () =>
@@ -54,8 +61,8 @@ export default function ClientsPage() {
       </div>
 
       <div className="card overflow-hidden">
-        {isLoading ? (
-          <div className="p-5 text-sm text-muted">Loading clients…</div>
+        {listLoading ? (
+          <ListLoader label="Loading clients…" />
         ) : (
           <div className="table-scroll">
             <table className="min-w-full text-left text-[12.5px]">
@@ -70,7 +77,7 @@ export default function ClientsPage() {
                 </tr>
               </thead>
               <tbody>
-                {data?.clients.map((c) => (
+                {pager.slice.map((c) => (
                   <tr key={c._id} className="border-t border-line/80">
                     <td className="px-4 py-3">
                       <div className="font-semibold text-navy">{c.name}</div>
@@ -99,6 +106,7 @@ export default function ClientsPage() {
             </table>
           </div>
         )}
+        {!listLoading && <PaginationBar {...pager} noun="clients" />}
       </div>
     </>
   );

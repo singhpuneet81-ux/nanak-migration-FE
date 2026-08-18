@@ -1,9 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
 import { getComms, fday, ftime } from "@/lib/api";
+import { PaginationBar, usePagination } from "@/components/runway/Pagination";
+import { ListLoaderCard } from "@/components/runway/ListLoader";
 
 export default function CommsQueuePage() {
-  const { data } = useQuery({ queryKey: ["comms"], queryFn: getComms });
-  if (!data) return <div className="text-muted">Loading comms queue…</div>;
+  const { data, isLoading } = useQuery({ queryKey: ["comms"], queryFn: getComms });
+  const pager = usePagination(data?.queue ?? []);
+  if (isLoading || !data) {
+    return (
+      <>
+        <div className="mb-5">
+          <h1 className="page-title">Comms queue</h1>
+          <p className="mt-1 text-[13px] text-muted">Automated message chain per booking: confirmation, reminders, follow-up.</p>
+        </div>
+        <ListLoaderCard label="Loading comms queue…" />
+      </>
+    );
+  }
 
   return (
     <>
@@ -13,7 +26,7 @@ export default function CommsQueuePage() {
       </div>
 
       <div className="space-y-3">
-        {data.queue.map(({ booking, message }, i) => {
+        {pager.slice.map(({ booking, message }, i) => {
           const sent = !!message.sent;
           const cancelled = ["cancelled", "no-show"].includes(booking.status);
           return (
@@ -38,6 +51,11 @@ export default function CommsQueuePage() {
         })}
         {!data.queue.length && <div className="text-muted">No messages in queue.</div>}
       </div>
+      {pager.total > 0 && (
+        <div className="mt-3 overflow-hidden rounded-2xl border border-line bg-white">
+          <PaginationBar {...pager} noun="messages" />
+        </div>
+      )}
     </>
   );
 }

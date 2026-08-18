@@ -1,11 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
 import { getReports } from "@/lib/api";
+import { PaginationBar, usePagination } from "@/components/runway/Pagination";
+import { ListLoaderCard } from "@/components/runway/ListLoader";
 
 export default function ReportsPage() {
   const { data, isLoading } = useQuery({ queryKey: ["reports"], queryFn: getReports });
+  const deadlinePager = usePagination(data?.upcomingDeadlines ?? []);
+  const workPager = usePagination(data?.teamWorkload ?? []);
 
-  if (isLoading) return <div className="card p-5 text-sm text-muted">Loading reports…</div>;
-  if (!data) return <div className="card p-5 text-sm text-muted">No report data yet.</div>;
+  if (isLoading || !data) {
+    return (
+      <>
+        <div className="mb-5">
+          <h1 className="page-title">Reports</h1>
+          <p className="mt-1 text-[13px] text-muted">Operational reporting across leads, bookings, clients, matters, documents and AML queue.</p>
+        </div>
+        {isLoading ? <ListLoaderCard label="Loading reports…" /> : <div className="card p-5 text-sm text-muted">No report data yet.</div>}
+      </>
+    );
+  }
 
   return (
     <>
@@ -55,22 +68,23 @@ export default function ReportsPage() {
       </div>
 
       <div className="mt-4 grid gap-4 xl:grid-cols-2">
-        <div className="card p-4">
+        <div className="card overflow-hidden p-4">
           <h2 className="text-sm font-bold text-navy">Upcoming deadlines</h2>
           <div className="mt-3 space-y-2">
-            {data.upcomingDeadlines.map((d) => (
+            {deadlinePager.slice.map((d) => (
               <div key={`${d.matterId}-${d.label}`} className="rounded-xl bg-surface px-3 py-2 text-[12px]">
                 <div className="font-semibold">{d.title}</div>
                 <div className="text-muted">{d.label} · {new Date(d.due).toLocaleDateString("en-AU")}</div>
               </div>
             ))}
           </div>
+          <PaginationBar {...deadlinePager} noun="deadlines" />
         </div>
 
-        <div className="card p-4">
+        <div className="card overflow-hidden p-4">
           <h2 className="text-sm font-bold text-navy">Team workload</h2>
           <div className="mt-3 space-y-2">
-            {data.teamWorkload.map((row) => (
+            {workPager.slice.map((row) => (
               <div key={row.assignee} className="rounded-xl bg-surface px-3 py-2 text-[12px]">
                 <div className="flex justify-between font-semibold">
                   <span>{row.assignee}</span>
@@ -80,6 +94,7 @@ export default function ReportsPage() {
               </div>
             ))}
           </div>
+          <PaginationBar {...workPager} noun="owners" />
         </div>
       </div>
     </>

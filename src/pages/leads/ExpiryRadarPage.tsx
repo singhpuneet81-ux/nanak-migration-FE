@@ -5,17 +5,33 @@ import KpiStrip from "@/components/runway/KpiStrip";
 import ExpiryRadar from "@/components/runway/ExpiryRadar";
 import LeadTable from "@/components/runway/LeadTable";
 import LeadDrawer from "@/components/runway/LeadDrawer";
+import { PaginationBar, usePagination } from "@/components/runway/Pagination";
+import { ListLoaderCard } from "@/components/runway/ListLoader";
 
 export default function ExpiryRadarPage() {
-  const { data, refetch } = useQuery({ queryKey: ["radar"], queryFn: getRadar });
+  const { data, refetch, isLoading } = useQuery({ queryKey: ["radar"], queryFn: getRadar });
   const [drawerId, setDrawerId] = useState<string | null>(null);
   const { data: drawerLead } = useQuery({
     queryKey: ["lead", drawerId],
     queryFn: () => getLead(drawerId!),
     enabled: !!drawerId,
   });
+  const queuePager = usePagination(data?.firstContactQueue ?? []);
+  const shortPager = usePagination(data?.shortRunway ?? []);
 
-  if (!data) return <div className="text-muted">Loading radar…</div>;
+  if (isLoading || !data) {
+    return (
+      <>
+        <div className="mb-5">
+          <h1 className="page-title">Expiry Radar</h1>
+          <p className="mt-1 max-w-xl text-[13px] text-muted">
+            Leads sorted by how much runway their visa has left — not by when they enquired.
+          </p>
+        </div>
+        <ListLoaderCard label="Loading radar…" />
+      </>
+    );
+  }
 
   return (
     <>
@@ -34,7 +50,10 @@ export default function ExpiryRadarPage() {
           <p className="text-xs text-muted">Uncontacted leads against the SLA clock.</p>
         </div>
         {data.firstContactQueue.length ? (
-          <LeadTable leads={data.firstContactQueue} onRowClick={setDrawerId} />
+          <>
+            <LeadTable leads={queuePager.slice} onRowClick={setDrawerId} />
+            <PaginationBar {...queuePager} noun="leads" />
+          </>
         ) : (
           <div className="p-5 font-semibold text-ok">Every lead has been contacted. Clean board.</div>
         )}
@@ -46,7 +65,10 @@ export default function ExpiryRadarPage() {
           <p className="text-xs text-muted">These outrank everything else this week.</p>
         </div>
         {data.shortRunway.length ? (
-          <LeadTable leads={data.shortRunway} onRowClick={setDrawerId} />
+          <>
+            <LeadTable leads={shortPager.slice} onRowClick={setDrawerId} />
+            <PaginationBar {...shortPager} noun="leads" />
+          </>
         ) : (
           <div className="p-5 text-muted">Nothing under six months right now.</div>
         )}

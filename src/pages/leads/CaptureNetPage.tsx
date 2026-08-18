@@ -1,6 +1,8 @@
 import { WIDGETS } from "@/types/runway";
+import { PaginationBar, usePagination } from "@/components/runway/Pagination";
 
 export default function CaptureNetPage() {
+  const pager = usePagination(WIDGETS);
   return (
     <>
       <div className="mb-5">
@@ -44,7 +46,7 @@ export default function CaptureNetPage() {
             </tr>
           </thead>
           <tbody>
-            {WIDGETS.map((x) => (
+            {pager.slice.map((x) => (
               <tr key={x.w} className="border-b border-line">
                 <td className="px-3 py-2 font-semibold">{x.w}</td>
                 <td className="px-3 py-2 text-xs">{x.where}</td>
@@ -56,6 +58,7 @@ export default function CaptureNetPage() {
             ))}
           </tbody>
         </table>
+        <PaginationBar {...pager} noun="widgets" />
       </div>
 
       <div className="card p-5">

@@ -2,11 +2,14 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getTeam, getLead, updateLead } from "@/lib/api";
 import LeadDrawer from "@/components/runway/LeadDrawer";
+import { PaginationBar, usePagination } from "@/components/runway/Pagination";
+import { ListLoaderCard } from "@/components/runway/ListLoader";
 import { toast } from "@/lib/utils";
 
 export default function AllocationPage() {
   const qc = useQueryClient();
-  const { data, refetch } = useQuery({ queryKey: ["team"], queryFn: getTeam });
+  const { data, refetch, isLoading } = useQuery({ queryKey: ["team"], queryFn: getTeam });
+  const unallocPager = usePagination(data?.unallocated ?? []);
   const [drawerId, setDrawerId] = useState<string | null>(null);
   const { data: drawerLead } = useQuery({
     queryKey: ["lead", drawerId],
@@ -22,7 +25,17 @@ export default function AllocationPage() {
     },
   });
 
-  if (!data) return <div className="text-muted">Loading team…</div>;
+  if (isLoading || !data) {
+    return (
+      <>
+        <div className="mb-5">
+          <h1 className="page-title">Allocation</h1>
+          <p className="mt-1 text-[13px] text-muted">Who holds what, against capacity. The RMA rule is enforced by the desk.</p>
+        </div>
+        <ListLoaderCard label="Loading allocation…" />
+      </>
+    );
+  }
 
   return (
     <>
@@ -62,7 +75,7 @@ export default function AllocationPage() {
             <h2 className="text-sm font-bold text-crit">Unallocated queue ({data.unallocated.length})</h2>
           </div>
           <div className="divide-y divide-line">
-            {data.unallocated.map((l) => (
+            {unallocPager.slice.map((l) => (
               <div key={l._id} className="flex flex-wrap items-center justify-between gap-2 px-5 py-3">
                 <button type="button" className="text-left font-semibold hover:text-navy" onClick={() => setDrawerId(l._id)}>
                   {l.name} · {l.source}
@@ -83,6 +96,7 @@ export default function AllocationPage() {
               </div>
             ))}
           </div>
+          <PaginationBar {...unallocPager} noun="leads" />
         </div>
       )}
 

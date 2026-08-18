@@ -120,3 +120,80 @@ h3,
     padding: 1px 6px !important;
   }
 }
+
+/* Calendly-style booking widget (ported from Runway HTML prototype) */
+.cw {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  min-height: 500px;
+  overflow: hidden;
+  position: relative;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(16, 28, 85, 0.06), 0 8px 24px rgba(16, 28, 85, 0.1), 0 24px 64px rgba(16, 28, 85, 0.12);
+}
+.cw:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  border-radius: 20px;
+  padding: 1.5px;
+  background: linear-gradient(140deg, #f5a623 0%, rgba(245, 166, 35, 0.15) 30%, rgba(16, 28, 85, 0.15) 70%, #101c55 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+.cw-left {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding: 24px 22px;
+  color: #fff;
+  background: linear-gradient(160deg, #16245f 0%, #101c55 45%, #0b1440 100%);
+}
+.cw-left:before {
+  content: "";
+  position: absolute;
+  top: -170px;
+  right: -170px;
+  width: 340px;
+  height: 340px;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 166, 35, 0.28) 0%, rgba(245, 166, 35, 0) 62%);
+}
+.cw-right {
+  position: relative;
+  padding: 24px 26px;
+}
+.cw-go {
+  width: 100%;
+  margin-top: 16px;
+  cursor: pointer;
+  border: 0;
+  border-radius: 10px;
+  padding: 13px;
+  font-size: 14.5px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: #101c55;
+  background: linear-gradient(135deg, #ffb63b 0%, #f5a623 55%, #e8920c 100%);
+  box-shadow: 0 4px 14px rgba(245, 166, 35, 0.4);
+}
+.cw-go:hover:not(:disabled) {
+  transform: translateY(-1.5px);
+  box-shadow: 0 7px 20px rgba(245, 166, 35, 0.5);
+}
+.cw-go:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+@media (max-width: 900px) {
+  .cw {
+    grid-template-columns: 1fr;
+  }
+}

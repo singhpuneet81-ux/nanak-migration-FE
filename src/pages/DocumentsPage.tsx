@@ -1,10 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createDocument, fdate, getClients, getDocuments, getMatters, updateDocument } from "@/lib/api";
+import { PaginationBar, usePagination } from "@/components/runway/Pagination";
+import ListLoader from "@/components/runway/ListLoader";
 import { toast } from "@/lib/utils";
 
 export default function DocumentsPage() {
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: ["documents"], queryFn: () => getDocuments() });
+  const pager = usePagination(data?.documents ?? []);
   const { data: clients } = useQuery({ queryKey: ["clients", "docs"], queryFn: () => getClients() });
   const { data: matters } = useQuery({ queryKey: ["matters", "docs"], queryFn: () => getMatters() });
 
@@ -56,7 +59,7 @@ export default function DocumentsPage() {
 
       <div className="card overflow-hidden">
         {isLoading ? (
-          <div className="p-5 text-sm text-muted">Loading document board…</div>
+          <ListLoader label="Loading documents…" />
         ) : (
           <div className="table-scroll">
             <table className="min-w-full text-left text-[12.5px]">
@@ -70,7 +73,7 @@ export default function DocumentsPage() {
                 </tr>
               </thead>
               <tbody>
-                {data?.documents.map((d) => (
+                {pager.slice.map((d) => (
                   <tr key={d._id} className="border-t border-line/80">
                     <td className="px-4 py-3">
                       <div className="font-semibold text-navy">{d.name}</div>
@@ -101,6 +104,7 @@ export default function DocumentsPage() {
             </table>
           </div>
         )}
+        {!isLoading && <PaginationBar {...pager} noun="documents" />}
       </div>
     </>
   );

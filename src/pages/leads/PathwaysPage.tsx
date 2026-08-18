@@ -2,9 +2,12 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getPathways, getLead, fm, fdate } from "@/lib/api";
 import LeadDrawer from "@/components/runway/LeadDrawer";
+import { PaginationBar, usePagination } from "@/components/runway/Pagination";
+import { ListLoaderCard } from "@/components/runway/ListLoader";
 
 export default function PathwaysPage() {
-  const { data, refetch } = useQuery({ queryKey: ["pathways"], queryFn: getPathways });
+  const { data, refetch, isLoading } = useQuery({ queryKey: ["pathways"], queryFn: getPathways });
+  const pager = usePagination(data?.leads ?? []);
   const [drawerId, setDrawerId] = useState<string | null>(null);
   const { data: drawerLead } = useQuery({
     queryKey: ["lead", drawerId],
@@ -12,7 +15,17 @@ export default function PathwaysPage() {
     enabled: !!drawerId,
   });
 
-  if (!data) return <div className="text-muted">Loading pathways…</div>;
+  if (isLoading || !data) {
+    return (
+      <>
+        <div className="mb-5">
+          <h1 className="page-title">Lifetime pathways</h1>
+          <p className="mt-1 text-[13px] text-muted">Each lead priced across their whole migration journey.</p>
+        </div>
+        <ListLoaderCard label="Loading pathways…" />
+      </>
+    );
+  }
 
   return (
     <>
@@ -56,7 +69,7 @@ export default function PathwaysPage() {
         </div>
       </div>
 
-      <div className="card overflow-x-auto">
+      <div className="card overflow-hidden">
         <div className="px-5 pt-4">
           <h2 className="text-sm font-bold">Pathway value per lead</h2>
         </div>
@@ -69,7 +82,7 @@ export default function PathwaysPage() {
             </tr>
           </thead>
           <tbody>
-            {data.leads.map((l) => (
+            {pager.slice.map((l) => (
               <tr key={l._id} className="cursor-pointer border-b border-line hover:bg-[#FAFAFE]" onClick={() => setDrawerId(l._id)}>
                 <td className="px-3 py-2">
                   <div className="font-semibold">{l.name}</div>
@@ -89,6 +102,7 @@ export default function PathwaysPage() {
             ))}
           </tbody>
         </table>
+        <PaginationBar {...pager} noun="leads" />
       </div>
 
       <LeadDrawer lead={drawerLead ?? null} open={!!drawerId} onClose={() => setDrawerId(null)} onUpdated={() => refetch()} />

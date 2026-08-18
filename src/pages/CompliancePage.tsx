@@ -1,10 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createCompliance, fdate, getClients, getCompliance, getMatters, updateCompliance } from "@/lib/api";
+import { PaginationBar, usePagination } from "@/components/runway/Pagination";
+import { ListLoaderCard } from "@/components/runway/ListLoader";
 import { toast } from "@/lib/utils";
 
 export default function CompliancePage() {
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: ["compliance"], queryFn: () => getCompliance() });
+  const pager = usePagination(data?.checks ?? [], 8);
   const { data: clients } = useQuery({ queryKey: ["clients", "compliance"], queryFn: () => getClients() });
   const { data: matters } = useQuery({ queryKey: ["matters", "compliance"], queryFn: () => getMatters() });
 
@@ -55,9 +58,11 @@ export default function CompliancePage() {
 
       <div className="grid gap-3 lg:grid-cols-2">
         {isLoading ? (
-          <div className="card p-5 text-sm text-muted">Loading compliance queue…</div>
+          <div className="lg:col-span-2">
+            <ListLoaderCard label="Loading AML checks…" />
+          </div>
         ) : (
-          data?.checks.map((c) => (
+          pager.slice.map((c) => (
             <div key={c._id} className="card p-4">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
@@ -83,6 +88,11 @@ export default function CompliancePage() {
           ))
         )}
       </div>
+      {!isLoading && (
+        <div className="mt-3 overflow-hidden rounded-2xl border border-line bg-white">
+          <PaginationBar {...pager} noun="checks" />
+        </div>
+      )}
     </>
   );
 }

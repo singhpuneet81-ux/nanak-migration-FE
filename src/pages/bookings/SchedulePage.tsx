@@ -2,6 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getBookings, updateBooking, fday, ftime } from "@/lib/api";
 import { toast } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { PaginationBar, usePagination } from "@/components/runway/Pagination";
+import { ListLoaderCard } from "@/components/runway/ListLoader";
 
 function BookingCard({
   b,
@@ -64,7 +66,9 @@ function BookingCard({
 
 export default function SchedulePage() {
   const qc = useQueryClient();
-  const { data } = useQuery({ queryKey: ["bookings"], queryFn: getBookings });
+  const { data, isLoading } = useQuery({ queryKey: ["bookings"], queryFn: getBookings });
+  const upcomingPager = usePagination(data?.upcoming ?? []);
+  const pastPager = usePagination(data?.past ?? []);
 
   const mut = useMutation({
     mutationFn: ({ id, status }: { id: string; status: string }) => updateBooking(id, { status }),
@@ -74,10 +78,20 @@ export default function SchedulePage() {
     },
   });
 
-  if (!data) return <div className="text-muted">Loading schedule…</div>;
+  if (isLoading || !data) {
+    return (
+      <>
+        <div className="mb-5">
+          <h1 className="page-title">Bookings</h1>
+          <p className="mt-1 text-[13px] text-muted">Every website booking lands here confirmed, reminded and linked to its lead.</p>
+        </div>
+        <ListLoaderCard label="Loading bookings…" />
+      </>
+    );
+  }
 
-  const groups: Record<string, typeof data.upcoming> = {};
-  data.upcoming.forEach((b) => {
+  const groups: Record<string, typeof upcomingPager.slice> = {};
+  upcomingPager.slice.forEach((b) => {
     const k = new Date(b.at).toDateString();
     (groups[k] = groups[k] || []).push(b);
   });
@@ -126,17 +140,22 @@ export default function SchedulePage() {
         </div>
       ))}
 
+      <div className="mb-4 overflow-hidden rounded-2xl border border-line bg-white">
+        <PaginationBar {...upcomingPager} noun="upcoming bookings" />
+      </div>
+
       {!data.upcoming.length && (
         <div className="card mb-4 p-5 text-muted">No upcoming consults. Use the Booking page tab to create one.</div>
       )}
 
-      <div className="card p-4">
+      <div className="card overflow-hidden p-4">
         <h2 className="text-sm font-bold">Recent · completed, no-shows</h2>
         <div className="mt-3">
-          {data.past.map((b) => (
+          {pastPager.slice.map((b) => (
             <BookingCard key={b._id} b={b} past />
           ))}
         </div>
+        <PaginationBar {...pastPager} noun="past bookings" />
       </div>
     </>
   );

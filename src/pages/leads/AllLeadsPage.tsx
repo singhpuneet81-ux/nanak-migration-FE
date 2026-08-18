@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getLeads, getLead, getMeta, createLead, exportLeads, downloadCsv } from "@/lib/api";
 import LeadTable from "@/components/runway/LeadTable";
 import LeadDrawer from "@/components/runway/LeadDrawer";
+import { PaginationBar, usePagination } from "@/components/runway/Pagination";
+import ListLoader from "@/components/runway/ListLoader";
 import { toast } from "@/lib/utils";
 
 export default function AllLeadsPage() {
@@ -21,10 +23,15 @@ export default function AllLeadsPage() {
   if (owner) params.owner = owner;
   if (status) params.status = status;
 
-  const { data, refetch } = useQuery({
+  const { data, refetch, isLoading, isFetching } = useQuery({
     queryKey: ["leads", params],
     queryFn: () => getLeads(params),
   });
+  const listLoading = isLoading || (isFetching && !data);
+  const pager = usePagination(data?.leads ?? []);
+  useEffect(() => {
+    pager.reset();
+  }, [search, source, band, owner, status, pager.reset]);
   const { data: meta } = useQuery({ queryKey: ["meta"], queryFn: getMeta });
   const { data: drawerLead } = useQuery({
     queryKey: ["lead", drawerId],
@@ -101,8 +108,15 @@ export default function AllLeadsPage() {
         </button>
       </div>
 
-      <div className="card">
-        <LeadTable leads={data?.leads ?? []} onRowClick={setDrawerId} />
+      <div className="card overflow-hidden">
+        {listLoading ? (
+          <ListLoader label="Loading leads…" />
+        ) : (
+          <>
+            <LeadTable leads={pager.slice} onRowClick={setDrawerId} />
+            <PaginationBar {...pager} noun="leads" />
+          </>
+        )}
       </div>
 
       <LeadDrawer lead={drawerLead ?? null} open={!!drawerId} onClose={() => setDrawerId(null)} onUpdated={() => refetch()} />

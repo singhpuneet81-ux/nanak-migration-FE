@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createMatter, fdate, getClients, getMatters, updateMatter } from "@/lib/api";
+import { PaginationBar, usePagination } from "@/components/runway/Pagination";
+import ListLoader, { ListLoaderCard } from "@/components/runway/ListLoader";
 import { toast } from "@/lib/utils";
 
 const STAGE_COLS = ["intake", "advice", "engaged", "docs", "review", "lodgement", "post-lodgement"] as const;
@@ -7,6 +9,7 @@ const STAGE_COLS = ["intake", "advice", "engaged", "docs", "review", "lodgement"
 export default function MattersPage() {
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: ["matters"], queryFn: () => getMatters() });
+  const pager = usePagination(data?.matters ?? []);
   const { data: clients } = useQuery({ queryKey: ["clients", "picker"], queryFn: () => getClients() });
 
   const add = useMutation({
@@ -54,7 +57,7 @@ export default function MattersPage() {
       </div>
 
       {isLoading ? (
-        <div className="card p-5 text-sm text-muted">Loading matters…</div>
+        <ListLoaderCard label="Loading matters…" />
       ) : (
         <div className="grid gap-3 xl:grid-cols-4">
           {STAGE_COLS.map((stage) => (
@@ -92,6 +95,43 @@ export default function MattersPage() {
           ))}
         </div>
       )}
+
+      <div className="card mt-4 overflow-hidden">
+        <div className="px-4 pt-4">
+          <h2 className="text-sm font-bold text-navy">All matters</h2>
+        </div>
+        {isLoading ? (
+          <ListLoader label="Loading matters…" />
+        ) : (
+          <>
+            <div className="table-scroll">
+              <table className="min-w-full text-left text-[12.5px]">
+                <thead className="bg-surface/70 text-[11px] uppercase tracking-wide text-muted">
+                  <tr>
+                    <th className="px-4 py-3">Matter</th>
+                    <th className="px-4 py-3">Client</th>
+                    <th className="px-4 py-3">Stage</th>
+                    <th className="px-4 py-3">Owner</th>
+                    <th className="px-4 py-3">Next action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pager.slice.map((m) => (
+                    <tr key={m._id} className="border-t border-line/80">
+                      <td className="px-4 py-3 font-semibold text-navy">{m.title}</td>
+                      <td className="px-4 py-3">{m.clientName}</td>
+                      <td className="px-4 py-3 capitalize">{m.stage.replace("-", " ")}</td>
+                      <td className="px-4 py-3">{m.assignedTo || "Unassigned"}</td>
+                      <td className="px-4 py-3 text-[11px] text-muted">{m.nextAction || "—"}{m.nextActionAt ? ` · ${fdate(m.nextActionAt)}` : ""}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <PaginationBar {...pager} noun="matters" />
+          </>
+        )}
+      </div>
     </>
   );
 }
