@@ -20,6 +20,8 @@ import ClientsPage from "@/pages/ClientsPage";
 import DocumentsPage from "@/pages/DocumentsPage";
 import CompliancePage from "@/pages/CompliancePage";
 import ReportsPage from "@/pages/ReportsPage";
+import HeroSectionChatbotPage from "@/pages/public/HeroSectionChatbotPage";
+import ImmigrationNewsletterPage from "@/pages/public/ImmigrationNewsletterPage";
 
 const qc = new QueryClient({
   defaultOptions: {
@@ -40,6 +42,10 @@ export default function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/herosection_chatbot" element={<HeroSectionChatbotPage />} />
+            <Route path="/herosection-chatbot" element={<Navigate to="/herosection_chatbot" replace />} />
+            <Route path="/immigration_newsletter" element={<ImmigrationNewsletterPage />} />
+            <Route path="/immigration-newsletter" element={<Navigate to="/immigration_newsletter" replace />} />
             <Route element={<ProtectedRoute />}>
               <Route element={<RunwayLayout />}>
                 <Route path="/" element={<Navigate to="/leads/radar" replace />} />

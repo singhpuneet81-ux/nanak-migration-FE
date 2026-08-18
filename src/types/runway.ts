@@ -210,5 +210,5 @@ export const WIDGETS = [
   { w: "Sponsor Cost Estimator", where: "Employer pages", asks: "Nominations, salary, term", gives: "SAF levy + total cost", data: "B2B lead, company size, roles", magnet: "2026 sponsorship cost sheet" },
   { w: "Partner Evidence Scorecard", where: "Partner visa pages", asks: "12 yes/no relationship questions", gives: "Evidence strength rating", data: "Relationship stage, evidence gaps", magnet: "Partner evidence checklist" },
   { w: "Micro CTA strip", where: "End of every article", asks: "Does this apply to you?", gives: "Yes → WhatsApp deep link", data: "Article + intent", magnet: "—" },
-  { w: "Newsletter", where: "Sidebar + footer", asks: "Email only", gives: "Monthly policy-change brief", data: "Top-of-funnel pool", magnet: "—" },
+  { w: "Hero pathway chatbot", where: "WordPress hero banner (iframe)", asks: "Goal, location, job offer, name + email", gives: "Suggested subclass in-chat", data: "Lead in All leads · Pathway assessment", magnet: "Book free consult" },
 ];

@@ -301,3 +301,14 @@ export function ftime(ts: string) {
 export function fday(ts: string) {
   return new Date(ts).toLocaleDateString("en-AU", { weekday: "long", day: "numeric", month: "short" });
 }
+
+export async function submitPathwayIntake(body: Record<string, unknown>) {
+  const res = await fetch(`${API_BASE}/intake`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(json.message || `Request failed (${res.status})`);
+  return json.data as { ok: boolean; created?: boolean };
+}

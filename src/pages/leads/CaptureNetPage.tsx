@@ -1,14 +1,50 @@
+import { useEffect, useState } from "react";
 import { WIDGETS } from "@/types/runway";
 import { PaginationBar, usePagination } from "@/components/runway/Pagination";
+import { toast } from "@/lib/utils";
 
 export default function CaptureNetPage() {
   const pager = usePagination(WIDGETS);
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const snippet = `<script src="${origin}/embed-parent.js" defer></script>
+<iframe
+  src="${origin}/herosection_chatbot"
+  title="Pathway Assessment"
+  loading="lazy"
+  scrolling="no"
+  style="width:100%;border:0;overflow:hidden;display:block;background:transparent"
+></iframe>`;
+
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    function onMsg(e: MessageEvent) {
+      const data = e.data;
+      if (!data || data.type !== "nanak-embed-resize" || data.source !== "herosection_chatbot") return;
+      const frame = document.getElementById("hero-chat-preview") as HTMLIFrameElement | null;
+      const h = Number(data.height);
+      if (!frame || !h) return;
+      frame.style.height = `${Math.min(h, 640)}px`;
+      frame.style.minHeight = "0";
+      frame.style.overflow = "hidden";
+    }
+    window.addEventListener("message", onMsg);
+    return () => window.removeEventListener("message", onMsg);
+  }, []);
+
+  async function copySnippet() {
+    await navigator.clipboard.writeText(snippet);
+    setCopied(true);
+    toast("WordPress snippet copied");
+    setTimeout(() => setCopied(false), 1600);
+  }
+
   return (
     <>
       <div className="mb-5">
         <h1 className="page-title">Capture net</h1>
         <p className="mt-1 max-w-xl text-[13px] text-muted">
-          Seven traps across the website. Every micro-CTA lands here scored, with a ready-to-send reply.
+          Traps across the website. Every micro-CTA lands here scored, with a ready-to-send reply.
         </p>
       </div>
 
@@ -61,12 +97,36 @@ export default function CaptureNetPage() {
         <PaginationBar {...pager} noun="widgets" />
       </div>
 
+      <div className="card mb-4 p-5">
+        <h2 className="text-sm font-bold">WordPress hero iframe</h2>
+        <p className="mt-1 text-xs text-muted">
+          Paste into the hero banner. Height follows the chatbot (no extra blank space). Submissions land in All leads as source “Pathway assessment”.
+        </p>
+        <pre className="mt-3 overflow-x-auto rounded bg-surface p-3 text-[11px]">{snippet}</pre>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button type="button" className="btn btn-pri" onClick={copySnippet}>
+            {copied ? "Copied" : "Copy snippet"}
+          </button>
+          <a className="btn" href="/herosection_chatbot" target="_blank" rel="noreferrer">
+            Open live widget
+          </a>
+        </div>
+        <div className="mt-4 max-w-[420px]">
+          <iframe
+            id="hero-chat-preview"
+            title="Pathway Assessment preview"
+            src="/herosection_chatbot"
+            scrolling="no"
+            style={{ width: "100%", height: 0, border: 0, display: "block", overflow: "hidden", background: "transparent" }}
+          />
+        </div>
+      </div>
+
       <div className="card p-5">
-        <h2 className="text-sm font-bold">Intake API (for future iframe / WordPress wiring)</h2>
+        <h2 className="text-sm font-bold">Intake API</h2>
         <pre className="mt-3 overflow-x-auto rounded bg-surface p-3 text-[11px]">
 {`POST /api/intake
-Header: x-nanak-intake-key: <your-key>
-Body: { widget, page, utm, fields, result, lead: { name, email, mobile, ... } }`}
+Body: { widget: "herosection_chatbot", result, lead: { name, email, mobile, ... } }`}
         </pre>
       </div>
     </>

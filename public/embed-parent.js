@@ -1,0 +1,71 @@
+/**
+ * WordPress parent — sizes Nanak Migration iframe embeds to content height.
+ * Same protocol as the accountants embeds (nanak-embed-resize). Do not set a fixed height.
+ *
+ *   <script src="https://admin.nanakmigration.com.au/embed-parent.js" defer></script>
+ */
+(function () {
+  if (window.__nanakMigrationIframeParent) return;
+  window.__nanakMigrationIframeParent = true;
+
+  function frameSrc(frame) {
+    try {
+      return frame.getAttribute("src") || frame.src || "";
+    } catch (_) {
+      return "";
+    }
+  }
+
+  function isHeroChat(src) {
+    return /herosection_chatbot|herosection-chatbot/i.test(src);
+  }
+
+  function isNewsletter(src) {
+    return /immigration_newsletter|immigration-newsletter/i.test(src);
+  }
+
+  function maxHeightFor(data, src) {
+    if (data.source === "immigration_newsletter" || isNewsletter(src)) return 320;
+    if (data.source === "herosection_chatbot" || isHeroChat(src)) return 640;
+    return data.maxHeight || 640;
+  }
+
+  function applyToFrame(frame, height, cap) {
+    var h = Number(height);
+    if (!h || h < 40) return;
+    if (h > cap) h = cap;
+    frame.dataset.nanakSized = "1";
+    frame.style.setProperty("width", "100%", "important");
+    frame.style.setProperty("max-width", "100%", "important");
+    frame.style.setProperty("min-width", "0", "important");
+    frame.style.setProperty("display", "block", "important");
+    frame.style.setProperty("overflow", "hidden", "important");
+    frame.style.setProperty("min-height", "0", "important");
+    frame.style.setProperty("max-height", "none", "important");
+    frame.style.setProperty("height", h + "px", "important");
+    frame.style.setProperty("border", "0", "important");
+    frame.style.setProperty("background", "transparent", "important");
+    frame.removeAttribute("height");
+    frame.setAttribute("scrolling", "no");
+  }
+
+  window.addEventListener("message", function (e) {
+    var data = e && e.data;
+    if (!data || typeof data !== "object") return;
+    if (data.type !== "nanak-embed-resize" && data.type !== "resize-iframe") return;
+    document.querySelectorAll("iframe").forEach(function (frame) {
+      try {
+        if (frame.contentWindow !== e.source) return;
+        var src = frameSrc(frame);
+        var match =
+          data.source === "herosection_chatbot" ||
+          data.source === "immigration_newsletter" ||
+          isHeroChat(src) ||
+          isNewsletter(src);
+        if (match) {
+          applyToFrame(frame, data.height, maxHeightFor(data, src));
+        }
+      } catch (_) {}
+    });
+  });
+})();
