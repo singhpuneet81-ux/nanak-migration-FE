@@ -15,6 +15,11 @@ import SchedulePage from "@/pages/bookings/SchedulePage";
 import CommsQueuePage from "@/pages/bookings/CommsQueuePage";
 import BookingWidgetPreview from "@/pages/bookings/BookingWidgetPreview";
 import AssessmentFormPreview from "@/pages/bookings/AssessmentFormPreview";
+import MattersPage from "@/pages/MattersPage";
+import ClientsPage from "@/pages/ClientsPage";
+import DocumentsPage from "@/pages/DocumentsPage";
+import CompliancePage from "@/pages/CompliancePage";
+import ReportsPage from "@/pages/ReportsPage";
 
 const qc = new QueryClient({
   defaultOptions: { queries: { staleTime: 15000, retry: 1 } },
@@ -41,6 +46,11 @@ export default function App() {
                 <Route path="/bookings/comms" element={<CommsQueuePage />} />
                 <Route path="/bookings/widget" element={<BookingWidgetPreview />} />
                 <Route path="/bookings/oaf" element={<AssessmentFormPreview />} />
+                <Route path="/matters" element={<MattersPage />} />
+                <Route path="/clients" element={<ClientsPage />} />
+                <Route path="/documents" element={<DocumentsPage />} />
+                <Route path="/compliance" element={<CompliancePage />} />
+                <Route path="/reports" element={<ReportsPage />} />
               </Route>
             </Route>
             <Route path="*" element={<Navigate to="/leads/radar" replace />} />

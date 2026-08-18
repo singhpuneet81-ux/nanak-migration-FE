@@ -8,11 +8,11 @@ import { cn } from "@/lib/utils";
 const MODULES = [
   { id: "leads", label: "Leads", live: true, base: "/leads" },
   { id: "bookings", label: "Bookings", live: true, base: "/bookings" },
-  { id: "matters", label: "Matters", live: false },
-  { id: "clients", label: "Clients", live: false },
-  { id: "docs", label: "Documents & forms", live: false },
-  { id: "aml", label: "AML/CTF", live: false },
-  { id: "reports", label: "Reports", live: false },
+  { id: "matters", label: "Matters", live: true, base: "/matters" },
+  { id: "clients", label: "Clients", live: true, base: "/clients" },
+  { id: "docs", label: "Documents & forms", live: true, base: "/documents" },
+  { id: "aml", label: "AML/CTF", live: true, base: "/compliance" },
+  { id: "reports", label: "Reports", live: true, base: "/reports" },
 ];
 
 const LEAD_TABS = [
@@ -37,6 +37,8 @@ export default function RunwayLayout() {
   const loc = useLocation();
   const nav = useNavigate();
   const isBookings = loc.pathname.startsWith("/bookings");
+  const isLeads = loc.pathname.startsWith("/leads") || loc.pathname === "/";
+  const activeModule = MODULES.find((m) => loc.pathname.startsWith(m.base || "___"))?.id || (isLeads ? "leads" : "");
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { data: radar } = useQuery({ queryKey: ["radar"], queryFn: getRadar, refetchInterval: 60000 });
@@ -69,31 +71,20 @@ export default function RunwayLayout() {
             key={m.id}
             type="button"
             className={cn(
-              "flex w-full items-center gap-2 border-l-[3px] border-transparent px-5 py-2.5 text-left text-[13px] font-medium text-muted transition hover:bg-lavender/60 hover:text-navy",
-              ((m.id === "leads" && !isBookings) || (m.id === "bookings" && isBookings)) &&
-                "runway-nav-on border-navy bg-lavender font-semibold text-navy"
+              "flex w-full items-center gap-2 border-l-[3px] border-transparent px-5 py-2.5 text-left text-[13px] font-medium text-white/78 transition hover:bg-white/8 hover:text-white",
+              activeModule === m.id && "runway-nav-on border-gold bg-white/12 font-semibold text-white"
             )}
             onClick={() => goModule(m.base!)}
           >
             {m.label}
             {m.id === "leads" && crit > 0 && (
-              <span className="ml-auto rounded-full bg-navy px-1.5 font-mono text-[10px] font-bold text-white">{crit}</span>
+              <span className="ml-auto rounded-full bg-gold px-1.5 font-mono text-[10px] font-bold text-navy">{crit}</span>
             )}
             {m.id === "bookings" && todayBk > 0 && (
-              <span className="ml-auto rounded-full bg-navy px-1.5 font-mono text-[10px] font-bold text-white">{todayBk}</span>
+              <span className="ml-auto rounded-full bg-gold px-1.5 font-mono text-[10px] font-bold text-navy">{todayBk}</span>
             )}
           </button>
-        ) : (
-          <button
-            key={m.id}
-            type="button"
-            className="hidden w-full cursor-default items-center px-5 py-2.5 text-left text-[13px] text-muted/50 lg:flex"
-            onClick={() => alert(`${m.label} — next module on the build list`)}
-          >
-            {m.label}
-            <span className="ml-auto rounded border border-line px-1 font-mono text-[9px] uppercase text-muted">soon</span>
-          </button>
-        )
+        ) : null
       )}
     </>
   );
@@ -101,32 +92,32 @@ export default function RunwayLayout() {
   return (
     <div className="runway-shell flex min-h-screen bg-white">
       {/* Desktop sidebar */}
-      <aside className="runway-side fixed bottom-0 left-0 top-0 z-20 hidden w-60 flex-col border-r border-line bg-white lg:flex">
-        <div className="border-b border-line px-4 pb-4 pt-5">
+      <aside className="runway-side fixed bottom-0 left-0 top-0 z-20 hidden w-64 flex-col border-r border-navy/50 bg-navy lg:flex">
+        <div className="border-b border-white/10 px-4 pb-4 pt-5">
           <img
             src="/nanak-migration-logo.png"
             alt="Nanak Migration Group"
-            className="h-12 w-auto max-w-full object-contain object-left"
+            className="h-12 w-auto max-w-full rounded-xl bg-white px-2 py-1 object-contain object-left"
           />
           <div className="eyebrow mt-2.5">Runway · Lead Desk</div>
         </div>
-        <div className="px-5 pb-1 pt-4 text-[10px] font-bold uppercase tracking-widest text-muted">Modules</div>
+        <div className="px-5 pb-1 pt-4 text-[10px] font-bold uppercase tracking-widest text-white/50">Modules</div>
         <nav className="runway-nav flex-1 overflow-y-auto">{moduleButtons}</nav>
-        <div className="border-t border-line px-5 py-3 text-[10.5px] leading-relaxed text-muted">
-          <b className="text-navy">{user?.name}</b>
+        <div className="border-t border-white/10 px-5 py-3 text-[10.5px] leading-relaxed text-white/70">
+          <b className="text-white">{user?.name}</b>
           <br />
           <span className="break-all">{user?.email}</span>
         </div>
-        <button type="button" className="mx-5 mb-4 text-left text-[11px] font-semibold text-muted hover:text-navy" onClick={logout}>
+        <button type="button" className="mx-5 mb-4 rounded-full border border-white/15 bg-white/5 px-3 py-2 text-left text-[11px] font-semibold text-white transition hover:bg-white/10" onClick={logout}>
           Sign out
         </button>
       </aside>
 
       {/* Mobile top bar */}
-      <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-line bg-white/95 px-3 py-2.5 backdrop-blur-md lg:hidden">
+      <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-navy/60 bg-navy px-3 py-2.5 backdrop-blur-md lg:hidden">
         <button
           type="button"
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-line text-navy"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/20 text-white"
           aria-label="Open menu"
           onClick={() => setMenuOpen(true)}
         >
@@ -134,12 +125,12 @@ export default function RunwayLayout() {
             <path d="M4 7h16M4 12h16M4 17h16" />
           </svg>
         </button>
-        <img src="/nanak-migration-logo.png" alt="Nanak Migration Group" className="h-9 w-auto max-w-[160px] object-contain" />
+        <img src="/nanak-migration-logo.png" alt="Nanak Migration Group" className="h-9 w-auto max-w-[160px] rounded-lg bg-white px-2 py-1 object-contain" />
         <div className="ml-auto flex items-center gap-2">
           {crit > 0 && (
-            <span className="rounded-full bg-navy px-2 py-0.5 font-mono text-[10px] font-bold text-white">{crit} crit</span>
+            <span className="rounded-full bg-gold px-2 py-0.5 font-mono text-[10px] font-bold text-navy">{crit} crit</span>
           )}
-          <button type="button" className="rounded-full px-2.5 py-1.5 text-[11px] font-semibold text-muted" onClick={logout}>
+          <button type="button" className="rounded-full px-2.5 py-1.5 text-[11px] font-semibold text-white/80" onClick={logout}>
             Sign out
           </button>
         </div>
@@ -152,29 +143,29 @@ export default function RunwayLayout() {
       />
       <aside
         className={cn(
-          "fixed bottom-0 left-0 top-0 z-50 flex w-[min(300px,88vw)] flex-col bg-white shadow-card transition-transform duration-200 lg:hidden",
+          "fixed bottom-0 left-0 top-0 z-50 flex w-[min(300px,88vw)] flex-col bg-navy shadow-card transition-transform duration-200 lg:hidden",
           menuOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="flex items-start justify-between border-b border-line px-4 pb-3 pt-4">
+        <div className="flex items-start justify-between border-b border-white/10 px-4 pb-3 pt-4">
           <div>
-            <img src="/nanak-migration-logo.png" alt="" className="h-10 w-auto max-w-[180px] object-contain" />
+            <img src="/nanak-migration-logo.png" alt="" className="h-10 w-auto max-w-[180px] rounded-lg bg-white px-2 py-1 object-contain" />
             <div className="eyebrow mt-2">Runway · Lead Desk</div>
           </div>
-          <button type="button" className="text-2xl leading-none text-muted" aria-label="Close menu" onClick={() => setMenuOpen(false)}>
+          <button type="button" className="text-2xl leading-none text-white/70" aria-label="Close menu" onClick={() => setMenuOpen(false)}>
             ×
           </button>
         </div>
-        <div className="px-5 pb-1 pt-4 text-[10px] font-bold uppercase tracking-widest text-muted">Modules</div>
+        <div className="px-5 pb-1 pt-4 text-[10px] font-bold uppercase tracking-widest text-white/50">Modules</div>
         <nav className="flex-1 overflow-y-auto">{moduleButtons}</nav>
-        <div className="border-t border-line px-5 py-3 text-[10.5px] leading-relaxed text-muted">
-          <b className="text-navy">{user?.name}</b>
+        <div className="border-t border-white/10 px-5 py-3 text-[10.5px] leading-relaxed text-white/70">
+          <b className="text-white">{user?.name}</b>
           <br />
           <span className="break-all">{user?.email}</span>
         </div>
         <button
           type="button"
-          className="mx-5 mb-5 rounded-full border border-line py-2.5 text-center text-[12px] font-semibold text-navy"
+          className="mx-5 mb-5 rounded-full border border-white/15 bg-white/5 py-2.5 text-center text-[12px] font-semibold text-white"
           onClick={logout}
         >
           Sign out
@@ -183,13 +174,13 @@ export default function RunwayLayout() {
 
       {/* Mobile quick module chips */}
       <div className="flex gap-2 overflow-x-auto border-b border-line bg-surface/60 px-3 py-2 lg:hidden">
-        {MODULES.filter((m) => m.live).map((m) => (
+        {MODULES.map((m) => (
           <button
             key={m.id}
             type="button"
             className={cn(
               "shrink-0 rounded-full border px-3 py-1.5 text-[12px] font-semibold",
-              ((m.id === "leads" && !isBookings) || (m.id === "bookings" && isBookings))
+              activeModule === m.id
                 ? "border-navy bg-navy text-white"
                 : "border-line bg-white text-navy"
             )}
@@ -202,24 +193,26 @@ export default function RunwayLayout() {
         ))}
       </div>
 
-      <main className="runway-main w-full flex-1 bg-surface/40 px-3 pb-20 pt-4 sm:px-5 lg:ml-60 lg:max-w-[1220px] lg:px-8 lg:pb-16 lg:pt-7">
-        <div className="subtabs -mx-1 px-1">
-          {(isBookings ? BOOKING_TABS : LEAD_TABS).map(([id, label]) => (
-            <NavLink
-              key={id}
-              to={isBookings ? `/bookings/${id}` : `/leads/${id}`}
-              className={({ isActive }) => cn("subtab", isActive && "subtab-on")}
-            >
-              {label}
-              {id === "radar" && crit > 0 && (
-                <span className="ml-1 rounded-full bg-navy px-1.5 font-mono text-[10px] font-bold text-white">{crit}</span>
-              )}
-              {id === "team" && (radar?.counts.unalloc ?? 0) > 0 && (
-                <span className="ml-1 rounded-full bg-lavender px-1.5 font-mono text-[10px] text-navy">{radar?.counts.unalloc}</span>
-              )}
-            </NavLink>
-          ))}
-        </div>
+      <main className="runway-main w-full flex-1 bg-surface/40 px-3 pb-20 pt-4 sm:px-5 lg:ml-64 lg:max-w-[1280px] lg:px-8 lg:pb-16 lg:pt-7">
+        {(isBookings || isLeads) && (
+          <div className="subtabs -mx-1 px-1">
+            {(isBookings ? BOOKING_TABS : LEAD_TABS).map(([id, label]) => (
+              <NavLink
+                key={id}
+                to={isBookings ? `/bookings/${id}` : `/leads/${id}`}
+                className={({ isActive }) => cn("subtab", isActive && "subtab-on")}
+              >
+                {label}
+                {id === "radar" && crit > 0 && (
+                  <span className="ml-1 rounded-full bg-navy px-1.5 font-mono text-[10px] font-bold text-white">{crit}</span>
+                )}
+                {id === "team" && (radar?.counts.unalloc ?? 0) > 0 && (
+                  <span className="ml-1 rounded-full bg-lavender px-1.5 font-mono text-[10px] text-navy">{radar?.counts.unalloc}</span>
+                )}
+              </NavLink>
+            ))}
+          </div>
+        )}
         <Outlet />
       </main>
 

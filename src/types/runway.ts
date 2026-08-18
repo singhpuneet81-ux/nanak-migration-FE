@@ -71,6 +71,124 @@ export type User = {
   role: string;
 };
 
+export type Client = {
+  _id: string;
+  id?: string;
+  kind: "person" | "business";
+  status: "lead" | "active" | "inactive";
+  name: string;
+  email: string;
+  mobile: string;
+  occupation: string;
+  location: string;
+  preferredChannel: "email" | "phone" | "whatsapp";
+  visaCurrent: string;
+  visaGoal: string;
+  visaExpiry: string | null;
+  source: string;
+  assignedTo: string;
+  matterCount?: number;
+  openMatterCount?: number;
+  tags: string[];
+  notes: { text: string; at: string }[];
+};
+
+export type Matter = {
+  _id: string;
+  id?: string;
+  title: string;
+  clientId: string;
+  clientName?: string;
+  leadId?: string | null;
+  bookingId?: string | null;
+  type: string;
+  visaCategory: string;
+  stage: "intake" | "advice" | "engaged" | "docs" | "review" | "lodgement" | "post-lodgement" | "closed";
+  status: "open" | "on-hold" | "lodged" | "approved" | "closed";
+  assignedTo: string;
+  office: string;
+  feeStatus: "unpaid" | "part-paid" | "paid";
+  lodgementStatus: "not-ready" | "ready" | "lodged" | "decision";
+  nextAction: string;
+  nextActionAt: string | null;
+  documentsOutstanding: number;
+  riskLevel: "low" | "medium" | "high";
+  documentCount?: number;
+  overdueDocs?: number;
+  deadlines: { _id?: string; label: string; due: string; done: boolean }[];
+  notes: { text: string; at: string }[];
+};
+
+export type DocumentRecord = {
+  _id: string;
+  id?: string;
+  clientId: string;
+  clientName?: string;
+  matterId?: string | null;
+  matterTitle?: string;
+  category: string;
+  name: string;
+  status: "required" | "requested" | "received" | "verified" | "expired";
+  requestedAt: string | null;
+  receivedAt: string | null;
+  expiryAt: string | null;
+  version: number;
+  source: "client" | "agent" | "generated";
+  notes: string;
+};
+
+export type ComplianceCheck = {
+  _id: string;
+  id?: string;
+  clientId: string;
+  clientName?: string;
+  matterId?: string | null;
+  matterTitle?: string;
+  kycStatus: "pending" | "in-review" | "verified";
+  sourceOfFundsStatus: "pending" | "review" | "cleared";
+  sanctionsStatus: "pending" | "clear" | "manual-review";
+  pepStatus: "clear" | "watch";
+  riskRating: "low" | "medium" | "high";
+  overallStatus: "pending" | "approved" | "escalated";
+  reviewer: string;
+  reviewedAt: string | null;
+  notes: { text: string; at: string }[];
+};
+
+export type ReportsData = {
+  kpis: {
+    leads: number;
+    bookings: number;
+    clients: number;
+    openMatters: number;
+    pendingCompliance: number;
+  };
+  funnel: {
+    newLeads: number;
+    engagedLeads: number;
+    consultLeads: number;
+    wonLeads: number;
+    activeClients: number;
+  };
+  bookings: {
+    confirmed: number;
+    completed: number;
+    noShow: number;
+  };
+  documents: {
+    total: number;
+    ready: number;
+    outstanding: number;
+  };
+  compliance: {
+    low: number;
+    medium: number;
+    high: number;
+  };
+  upcomingDeadlines: { matterId: string; title: string; label: string; due: string }[];
+  teamWorkload: { assignee: string; matters: number; highRisk: number; docsOutstanding: number }[];
+};
+
 export type Kpis = {
   monthNew: number;
   awaitingContact: number;

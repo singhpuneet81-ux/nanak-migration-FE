@@ -179,6 +179,98 @@ export async function submitOaf(bookingId: string, data: Record<string, string |
   );
 }
 
+export async function getClients(params: Record<string, string> = {}) {
+  const q = new URLSearchParams(params).toString();
+  return request<{
+    clients: import("@/types/runway").Client[];
+    summary: { total: number; active: number; businesses: number; withOpenMatters: number };
+  }>(`/admin/clients${q ? `?${q}` : ""}`);
+}
+
+export async function createClient(body: Record<string, unknown>) {
+  return request<import("@/types/runway").Client>("/admin/clients", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function updateClient(id: string, body: Record<string, unknown>) {
+  return request<import("@/types/runway").Client>(`/admin/clients/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function getMatters(params: Record<string, string> = {}) {
+  const q = new URLSearchParams(params).toString();
+  return request<{
+    matters: import("@/types/runway").Matter[];
+    summary: { total: number; open: number; dueThisWeek: number; documentsOutstanding: number };
+  }>(`/admin/matters${q ? `?${q}` : ""}`);
+}
+
+export async function createMatter(body: Record<string, unknown>) {
+  return request<import("@/types/runway").Matter>("/admin/matters", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function updateMatter(id: string, body: Record<string, unknown>) {
+  return request<import("@/types/runway").Matter>(`/admin/matters/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function getDocuments(params: Record<string, string> = {}) {
+  const q = new URLSearchParams(params).toString();
+  return request<{
+    documents: import("@/types/runway").DocumentRecord[];
+    summary: { total: number; required: number; requested: number; expired: number };
+  }>(`/admin/documents${q ? `?${q}` : ""}`);
+}
+
+export async function createDocument(body: Record<string, unknown>) {
+  return request<import("@/types/runway").DocumentRecord>("/admin/documents", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function updateDocument(id: string, body: Record<string, unknown>) {
+  return request<import("@/types/runway").DocumentRecord>(`/admin/documents/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function getCompliance(params: Record<string, string> = {}) {
+  const q = new URLSearchParams(params).toString();
+  return request<{
+    checks: import("@/types/runway").ComplianceCheck[];
+    summary: { total: number; pending: number; escalated: number; highRisk: number };
+  }>(`/admin/compliance${q ? `?${q}` : ""}`);
+}
+
+export async function createCompliance(body: Record<string, unknown>) {
+  return request<import("@/types/runway").ComplianceCheck>("/admin/compliance", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function updateCompliance(id: string, body: Record<string, unknown>) {
+  return request<import("@/types/runway").ComplianceCheck>(`/admin/compliance/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function getReports() {
+  return request<import("@/types/runway").ReportsData>("/admin/reports");
+}
+
 export function downloadCsv(filename: string, rows: (string | number | boolean | null | undefined)[][]) {
   const csv = rows.map((r) => r.map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
   const a = document.createElement("a");
