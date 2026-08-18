@@ -41,7 +41,7 @@ export default function LeadDrawer({ lead, open, onClose, onUpdated }: Props) {
       <div className={cn("fixed inset-0 z-40 bg-navy/35 transition", open ? "block" : "hidden")} onClick={onClose} />
       <aside
         className={cn(
-          "fixed bottom-0 right-0 top-0 z-50 w-full max-w-[440px] overflow-y-auto bg-white shadow-[-8px_0_30px_rgba(16,28,85,0.18)] transition-transform duration-200",
+          "fixed bottom-0 right-0 top-0 z-50 w-full max-w-none overflow-y-auto bg-white shadow-[-8px_0_30px_rgba(16,28,85,0.18)] transition-transform duration-200 sm:max-w-[440px]",
           open ? "translate-x-0" : "translate-x-full"
         )}
       >

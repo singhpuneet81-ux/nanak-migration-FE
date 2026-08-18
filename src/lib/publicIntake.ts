@@ -13,8 +13,8 @@ export async function submitPublicIntake(body: Record<string, unknown>) {
     body: JSON.stringify(body),
   });
   const json = await res.json().catch(() => ({}));
-  if (!res.ok) {
+  if (!res.ok || json.success === false) {
     throw new Error(json.message || `Request failed (${res.status})`);
   }
-  return json.data as { ok: boolean; created?: boolean; skipped?: boolean };
+  return (json.data ?? json) as { ok: boolean; created?: boolean; skipped?: boolean };
 }

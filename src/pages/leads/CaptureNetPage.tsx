@@ -24,7 +24,7 @@ export default function CaptureNetPage() {
       const frame = document.getElementById("hero-chat-preview") as HTMLIFrameElement | null;
       const h = Number(data.height);
       if (!frame || !h) return;
-      frame.style.height = `${Math.min(h, 640)}px`;
+      frame.style.height = `${Math.min(h, 1200)}px`;
       frame.style.minHeight = "0";
       frame.style.overflow = "hidden";
     }

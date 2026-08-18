@@ -3,7 +3,7 @@ import { fm } from "@/lib/api";
 
 export default function KpiStrip({ kpis }: { kpis: Kpis }) {
   return (
-    <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-5">
+    <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
       <div className="card p-3.5">
         <div className="text-[11px] font-semibold uppercase tracking-wide text-muted">Leads · 30 days</div>
         <div className="mt-1 text-2xl font-bold tracking-tight">{kpis.monthNew}</div>
@@ -30,7 +30,7 @@ export default function KpiStrip({ kpis }: { kpis: Kpis }) {
         </div>
         <div className="text-[11px] text-muted">visa expires &lt;90 days</div>
       </div>
-      <div className="card col-span-2 p-3.5 lg:col-span-1">
+      <div className="card col-span-2 p-3.5 md:col-span-1 lg:col-span-1">
         <div className="text-[11px] font-semibold uppercase tracking-wide text-muted">Pipeline lifetime value</div>
         <div className="mt-1 text-2xl font-bold tracking-tight text-ok">{fm(kpis.pipelineLtv)}</div>
         <div className="text-[11px] text-muted">est. professional fees</div>

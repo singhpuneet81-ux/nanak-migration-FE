@@ -1,6 +1,5 @@
 /**
  * WordPress parent — sizes Nanak Migration iframe embeds to content height.
- * Same protocol as the accountants embeds (nanak-embed-resize). Do not set a fixed height.
  *
  *   <script src="https://admin.nanakmigration.com.au/embed-parent.js" defer></script>
  */
@@ -24,16 +23,17 @@
     return /immigration_newsletter|immigration-newsletter/i.test(src);
   }
 
-  function maxHeightFor(data, src) {
-    if (data.source === "immigration_newsletter" || isNewsletter(src)) return 320;
-    if (data.source === "herosection_chatbot" || isHeroChat(src)) return 640;
-    return data.maxHeight || 640;
+  function ceilingFor(data, src) {
+    if (data.maxHeight && data.height) return Math.max(Number(data.maxHeight), Number(data.height));
+    if (data.source === "immigration_newsletter" || isNewsletter(src)) return 520;
+    if (data.source === "herosection_chatbot" || isHeroChat(src)) return 1200;
+    return 1200;
   }
 
   function applyToFrame(frame, height, cap) {
     var h = Number(height);
     if (!h || h < 40) return;
-    if (h > cap) h = cap;
+    if (cap && h > cap) h = cap;
     frame.dataset.nanakSized = "1";
     frame.style.setProperty("width", "100%", "important");
     frame.style.setProperty("max-width", "100%", "important");
@@ -63,7 +63,17 @@
           isHeroChat(src) ||
           isNewsletter(src);
         if (match) {
-          applyToFrame(frame, data.height, maxHeightFor(data, src));
+          applyToFrame(frame, data.height, ceilingFor(data, src));
+        }
+      } catch (_) {}
+    });
+  });
+
+  window.addEventListener("resize", function () {
+    document.querySelectorAll("iframe[data-nanak-sized='1']").forEach(function (frame) {
+      try {
+        if (frame.contentWindow && frame.contentWindow.postMessage) {
+          frame.contentWindow.postMessage({ type: "nanak-embed-request-resize" }, "*");
         }
       } catch (_) {}
     });

@@ -87,9 +87,9 @@ export default function RunwayLayout() {
   );
 
   return (
-    <div className="runway-shell flex min-h-screen bg-white">
-      {/* Desktop sidebar */}
-      <aside className="runway-side fixed bottom-0 left-0 top-0 z-20 hidden w-64 flex-col border-r border-navy/50 bg-navy lg:flex">
+    <div className="runway-shell flex min-h-dvh flex-col bg-white md:flex-row">
+      {/* Desktop + tablet sidebar */}
+      <aside className="runway-side fixed bottom-0 left-0 top-0 z-20 hidden w-56 flex-col border-r border-navy/50 bg-navy md:flex lg:w-64">
         <div className="border-b border-white/10 px-4 pb-4 pt-5">
           <img
             src="/nanak-migration-logo.png"
@@ -110,8 +110,8 @@ export default function RunwayLayout() {
         </button>
       </aside>
 
-      {/* Mobile top bar */}
-      <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-navy/60 bg-navy px-3 py-2.5 backdrop-blur-md lg:hidden">
+      {/* Mobile top bar (phones only) */}
+      <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-navy/60 bg-navy px-3 py-2.5 backdrop-blur-md md:hidden">
         <button
           type="button"
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/20 text-white"
@@ -135,12 +135,12 @@ export default function RunwayLayout() {
 
       {/* Mobile drawer */}
       <div
-        className={cn("fixed inset-0 z-40 bg-navy/40 transition-opacity lg:hidden", menuOpen ? "opacity-100" : "pointer-events-none opacity-0")}
+        className={cn("fixed inset-0 z-40 bg-navy/40 transition-opacity md:hidden", menuOpen ? "opacity-100" : "pointer-events-none opacity-0")}
         onClick={() => setMenuOpen(false)}
       />
       <aside
         className={cn(
-          "fixed bottom-0 left-0 top-0 z-50 flex w-[min(300px,88vw)] flex-col bg-navy shadow-card transition-transform duration-200 lg:hidden",
+          "fixed bottom-0 left-0 top-0 z-50 flex w-[min(300px,88vw)] flex-col bg-navy shadow-card transition-transform duration-200 md:hidden",
           menuOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
@@ -169,8 +169,8 @@ export default function RunwayLayout() {
         </button>
       </aside>
 
-      {/* Mobile quick module chips */}
-      <div className="flex gap-2 overflow-x-auto border-b border-line bg-surface/60 px-3 py-2 lg:hidden">
+      {/* Mobile quick module chips (phones only) */}
+      <div className="flex gap-2 overflow-x-auto border-b border-line bg-surface/60 px-3 py-2 md:hidden">
         {MODULES.map((m) => (
           <NavLink
             key={m.id}
@@ -191,7 +191,7 @@ export default function RunwayLayout() {
         ))}
       </div>
 
-      <main className="runway-main w-full flex-1 bg-surface/40 px-3 pb-20 pt-4 sm:px-5 lg:ml-64 lg:max-w-[1280px] lg:px-8 lg:pb-16 lg:pt-7">
+      <main className="runway-main w-full flex-1 bg-surface/40 px-3 pb-20 pt-4 sm:px-5 md:ml-56 md:max-w-none md:px-6 md:pb-16 md:pt-6 lg:ml-64 lg:max-w-[1280px] lg:px-8 lg:pt-7">
         {(isBookings || isLeads) && (
           <div className="subtabs -mx-1 px-1">
             {(isBookings ? BOOKING_TABS : LEAD_TABS).map(([id, label]) => (

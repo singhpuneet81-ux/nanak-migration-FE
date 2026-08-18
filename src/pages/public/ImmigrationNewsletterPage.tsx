@@ -1,7 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState, type FormEvent } from "react";
-import { submitPathwayIntake } from "@/lib/api";
-
-const MAX_HEIGHT = 320;
+import { submitPublicIntake } from "@/lib/publicIntake";
+import { postEmbedResize, bindEmbedResizeListener } from "@/lib/embedResize";
 
 function parentPage() {
   try {
@@ -13,42 +12,7 @@ function parentPage() {
 }
 
 function postEmbedHeight(el: HTMLElement | null) {
-  if (!el || window.parent === window) return;
-  let h = Math.ceil(Math.max(el.getBoundingClientRect().height, el.offsetHeight, el.scrollHeight));
-  if (h < 40) return;
-  if (h > MAX_HEIGHT) h = MAX_HEIGHT;
-  const payload = {
-    type: "nanak-embed-resize",
-    height: h,
-    source: "immigration_newsletter",
-    compact: true,
-    maxHeight: MAX_HEIGHT,
-  };
-  try {
-    window.parent.postMessage(payload, "*");
-  } catch {
-    /* ignore */
-  }
-  try {
-    window.parent.document.querySelectorAll("iframe").forEach((frame) => {
-      try {
-        if (frame.contentWindow === window) {
-          frame.style.height = `${h}px`;
-          frame.style.minHeight = "0";
-          frame.style.maxHeight = "none";
-          frame.style.overflow = "hidden";
-          frame.style.display = "block";
-          frame.style.width = "100%";
-          frame.removeAttribute("height");
-          frame.setAttribute("scrolling", "no");
-        }
-      } catch {
-        /* ignore */
-      }
-    });
-  } catch {
-    /* ignore */
-  }
+  postEmbedResize(el, "immigration_newsletter");
 }
 
 export default function ImmigrationNewsletterPage() {
@@ -80,9 +44,11 @@ export default function ImmigrationNewsletterPage() {
     if (!el || typeof ResizeObserver === "undefined") return;
     const ro = new ResizeObserver(() => postEmbedHeight(el));
     ro.observe(el);
+    const unbind = bindEmbedResizeListener(el, "immigration_newsletter");
     const timers = [80, 240, 600].map((ms) => window.setTimeout(() => postEmbedHeight(el), ms));
     return () => {
       ro.disconnect();
+      unbind();
       timers.forEach(clearTimeout);
     };
   }, [done, err, busy]);
@@ -97,8 +63,8 @@ export default function ImmigrationNewsletterPage() {
     setBusy(true);
     setErr("");
     try {
-      await submitPathwayIntake({
-        widget: "newsletter",
+      await submitPublicIntake({
+        widget: "immigration_newsletter",
         page: parentPage(),
         company_website: hp,
         lead: {
