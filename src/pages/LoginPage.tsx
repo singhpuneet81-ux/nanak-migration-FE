@@ -52,7 +52,7 @@ export default function LoginPage() {
           <img
             src="/nanak-migration-logo.png"
             alt="Nanak Migration Group"
-            className="h-14 w-auto max-w-[280px] object-contain drop-shadow-[0_4px_18px_rgba(0,0,0,0.55)] sm:h-16 lg:mb-2"
+            className="h-12 w-auto max-w-[260px] object-contain sm:h-14 lg:mb-2"
           />
           <p className="mt-4 text-[11px] font-bold uppercase tracking-[0.16em] text-gold lg:mt-6">
             Registered Migration Agents

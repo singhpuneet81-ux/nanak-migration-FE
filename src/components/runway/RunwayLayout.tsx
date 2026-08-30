@@ -13,6 +13,7 @@ const MODULES = [
   { id: "docs", label: "Documents & forms", live: true, base: "/documents" },
   { id: "aml", label: "AML/CTF", live: true, base: "/compliance" },
   { id: "reports", label: "Reports", live: true, base: "/reports" },
+  { id: "website", label: "Website", live: true, base: "/website/homepage", match: "/website" },
 ];
 
 const LEAD_TABS = [
@@ -94,7 +95,7 @@ export default function RunwayLayout() {
           <img
             src="/nanak-migration-logo.png"
             alt="Nanak Migration Group"
-            className="h-12 w-auto max-w-full rounded-xl bg-white px-2 py-1 object-contain object-left"
+            className="h-11 w-auto max-w-full object-contain object-left"
           />
           <div className="eyebrow mt-2.5">Runway · Lead Desk</div>
         </div>
@@ -122,7 +123,7 @@ export default function RunwayLayout() {
             <path d="M4 7h16M4 12h16M4 17h16" />
           </svg>
         </button>
-        <img src="/nanak-migration-logo.png" alt="Nanak Migration Group" className="h-9 w-auto max-w-[160px] rounded-lg bg-white px-2 py-1 object-contain" />
+        <img src="/nanak-migration-logo.png" alt="Nanak Migration Group" className="h-8 w-auto max-w-[150px] object-contain" />
         <div className="ml-auto flex items-center gap-2">
           {crit > 0 && (
             <span className="rounded-full bg-gold px-2 py-0.5 font-mono text-[10px] font-bold text-navy">{crit} crit</span>
@@ -146,7 +147,7 @@ export default function RunwayLayout() {
       >
         <div className="flex items-start justify-between border-b border-white/10 px-4 pb-3 pt-4">
           <div>
-            <img src="/nanak-migration-logo.png" alt="" className="h-10 w-auto max-w-[180px] rounded-lg bg-white px-2 py-1 object-contain" />
+            <img src="/nanak-migration-logo.png" alt="" className="h-9 w-auto max-w-[170px] object-contain" />
             <div className="eyebrow mt-2">Runway · Lead Desk</div>
           </div>
           <button type="button" className="text-2xl leading-none text-white/70" aria-label="Close menu" onClick={() => setMenuOpen(false)}>

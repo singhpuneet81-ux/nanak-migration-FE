@@ -307,3 +307,18 @@ export function fday(ts: string) {
 export async function submitPathwayIntake(body: Record<string, unknown>) {
   return submitPublicIntake(body);
 }
+
+export async function getSiteContent() {
+  return request<Record<string, unknown>>("/admin/site-content");
+}
+
+export async function updateSiteContent(body: Record<string, unknown>) {
+  return request<Record<string, unknown>>("/admin/site-content", {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function resetSiteContent() {
+  return request<Record<string, unknown>>("/admin/site-content/reset", { method: "POST" });
+}
