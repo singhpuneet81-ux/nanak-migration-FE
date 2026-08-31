@@ -79,6 +79,10 @@ export async function updateLead(id: string, body: Record<string, unknown>) {
   });
 }
 
+export async function deleteLead(id: string) {
+  return request<{ ok: boolean }>(`/admin/leads/${id}`, { method: "DELETE" });
+}
+
 export async function exportLeads(params: Record<string, string> = {}) {
   const q = new URLSearchParams(params).toString();
   return request<{ rows: (string | number | boolean)[][] }>(`/admin/leads/export${q ? `?${q}` : ""}`);
@@ -321,6 +325,13 @@ export async function updateSiteContent(body: Record<string, unknown>) {
 
 export async function resetSiteContent() {
   return request<Record<string, unknown>>("/admin/site-content/reset", { method: "POST" });
+}
+
+export async function syncWebsiteContent() {
+  return request<{ blogs: number; faqs: number; seoPages: number; homepage: string }>(
+    "/admin/content/sync-website",
+    { method: "POST" }
+  );
 }
 
 // ——— Blog CMS ———

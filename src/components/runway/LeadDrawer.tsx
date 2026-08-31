@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Lead } from "@/types/runway";
-import { updateLead, fm, fdate } from "@/lib/api";
+import { deleteLead, updateLead, fm, fdate } from "@/lib/api";
 import { toast } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
@@ -28,6 +28,19 @@ export default function LeadDrawer({ lead, open, onClose, onUpdated }: Props) {
       onUpdated();
       toast("Lead updated");
     },
+  });
+
+  const deleteMut = useMutation({
+    mutationFn: () => deleteLead(lead!._id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["leads"] });
+      qc.invalidateQueries({ queryKey: ["radar"] });
+      qc.invalidateQueries({ queryKey: ["team"] });
+      onClose();
+      onUpdated();
+      toast("Lead deleted");
+    },
+    onError: (e: Error) => toast(e.message),
   });
 
   if (!lead) return null;
@@ -236,6 +249,21 @@ export default function LeadDrawer({ lead, open, onClose, onUpdated }: Props) {
                 </div>
               ))}
             </div>
+          </section>
+
+          <section className="border-t border-line py-4">
+            <button
+              type="button"
+              className="w-full rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-xs font-bold text-red-700 transition hover:bg-red-100"
+              disabled={deleteMut.isPending}
+              onClick={() => {
+                if (window.confirm(`Delete lead "${lead.name}"? This cannot be undone.`)) {
+                  deleteMut.mutate();
+                }
+              }}
+            >
+              {deleteMut.isPending ? "Deleting…" : "Delete lead"}
+            </button>
           </section>
         </div>
       </aside>

@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getRadar, getBookings } from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
+import WebsiteSyncBar from "@/components/website/WebsiteSyncBar";
 
 const MODULES = [
   { id: "leads", label: "Leads", live: true, base: "/leads/radar", match: "/leads" },
@@ -99,13 +100,13 @@ export default function RunwayLayout() {
     <div className="runway-shell flex min-h-dvh flex-col bg-white md:flex-row">
       {/* Desktop + tablet sidebar */}
       <aside className="runway-side fixed bottom-0 left-0 top-0 z-20 hidden w-56 flex-col border-r border-navy/50 bg-navy md:flex lg:w-64">
-        <div className="border-b border-white/10 px-4 pb-4 pt-5">
+        <div className="border-b border-white/10 bg-black px-4 pb-4 pt-5">
           <img
-            src="/nanak-migration-logo.png"
+            src="/logo.png"
             alt="Nanak Migration Group"
-            className="h-11 w-auto max-w-full object-contain object-left"
+            className="h-12 w-auto max-w-full object-contain object-left"
           />
-          <div className="eyebrow mt-2.5">Runway · Lead Desk</div>
+          <div className="eyebrow mt-3">Runway · Lead Desk</div>
         </div>
         <div className="px-5 pb-1 pt-4 text-[10px] font-bold uppercase tracking-widest text-white/50">Modules</div>
         <nav className="runway-nav flex-1 overflow-y-auto">{moduleButtons}</nav>
@@ -131,7 +132,7 @@ export default function RunwayLayout() {
             <path d="M4 7h16M4 12h16M4 17h16" />
           </svg>
         </button>
-        <img src="/nanak-migration-logo.png" alt="Nanak Migration Group" className="h-8 w-auto max-w-[150px] object-contain" />
+        <img src="/logo.png" alt="Nanak Migration Group" className="h-9 w-auto max-w-[160px] object-contain" />
         <div className="ml-auto flex items-center gap-2">
           {crit > 0 && (
             <span className="rounded-full bg-gold px-2 py-0.5 font-mono text-[10px] font-bold text-navy">{crit} crit</span>
@@ -155,7 +156,7 @@ export default function RunwayLayout() {
       >
         <div className="flex items-start justify-between border-b border-white/10 px-4 pb-3 pt-4">
           <div>
-            <img src="/nanak-migration-logo.png" alt="" className="h-9 w-auto max-w-[170px] object-contain" />
+            <img src="/logo.png" alt="" className="h-10 w-auto max-w-[180px] object-contain" />
             <div className="eyebrow mt-2">Runway · Lead Desk</div>
           </div>
           <button type="button" className="text-2xl leading-none text-white/70" aria-label="Close menu" onClick={() => setMenuOpen(false)}>
@@ -202,7 +203,8 @@ export default function RunwayLayout() {
 
       <main className="runway-main w-full flex-1 bg-surface/40 px-3 pb-20 pt-4 sm:px-5 md:ml-56 md:max-w-none md:px-6 md:pb-16 md:pt-6 lg:ml-64 lg:max-w-[1280px] lg:px-8 lg:pt-7">
         {(isBookings || isLeads || isWebsite) && (
-          <div className="subtabs -mx-1 px-1">
+          <div className="subtabs-wrap">
+            <div className="subtabs -mx-1 px-1">
             {(isBookings ? BOOKING_TABS : isWebsite ? WEBSITE_TABS : LEAD_TABS).map(([id, label]) => (
               <NavLink
                 key={id}
@@ -218,8 +220,10 @@ export default function RunwayLayout() {
                 )}
               </NavLink>
             ))}
+            </div>
           </div>
         )}
+        {isWebsite && <WebsiteSyncBar />}
         <Outlet />
       </main>
 
