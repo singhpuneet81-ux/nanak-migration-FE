@@ -322,3 +322,92 @@ export async function updateSiteContent(body: Record<string, unknown>) {
 export async function resetSiteContent() {
   return request<Record<string, unknown>>("/admin/site-content/reset", { method: "POST" });
 }
+
+// ——— Blog CMS ———
+export async function getBlogs(params: Record<string, string> = {}) {
+  const q = new URLSearchParams(params).toString();
+  return request<{ blogs: BlogPost[] }>(`/admin/blogs${q ? `?${q}` : ""}`);
+}
+
+export async function getBlog(id: string) {
+  return request<BlogPost>(`/admin/blogs/${id}`);
+}
+
+export async function createBlog(body: Record<string, unknown>) {
+  return request<BlogPost>("/admin/blogs", { method: "POST", body: JSON.stringify(body) });
+}
+
+export async function updateBlog(id: string, body: Record<string, unknown>) {
+  return request<BlogPost>(`/admin/blogs/${id}`, { method: "PATCH", body: JSON.stringify(body) });
+}
+
+export async function deleteBlog(id: string) {
+  return request<{ ok: boolean }>(`/admin/blogs/${id}`, { method: "DELETE" });
+}
+
+// ——— FAQ CMS ———
+export async function getFaqs() {
+  return request<{ collections: FaqCollection[] }>("/admin/faqs");
+}
+
+export async function createFaq(body: Record<string, unknown>) {
+  return request<FaqCollection>("/admin/faqs", { method: "POST", body: JSON.stringify(body) });
+}
+
+export async function updateFaq(id: string, body: Record<string, unknown>) {
+  return request<FaqCollection>(`/admin/faqs/${id}`, { method: "PATCH", body: JSON.stringify(body) });
+}
+
+export async function deleteFaq(id: string) {
+  return request<{ ok: boolean }>(`/admin/faqs/${id}`, { method: "DELETE" });
+}
+
+// ——— SEO CMS ———
+export async function getSeoPages() {
+  return request<{ pages: SeoPage[] }>("/admin/seo");
+}
+
+export async function upsertSeo(routeKey: string, body: Record<string, unknown>) {
+  return request<SeoPage>(`/admin/seo/${encodeURIComponent(routeKey)}`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+}
+
+export type BlogPost = {
+  id: string;
+  slug: string;
+  title: string;
+  standfirst: string;
+  body: string;
+  category: string;
+  tags: string[];
+  relatedRoute: string;
+  status: "draft" | "published";
+  publishedAt?: string;
+  updatedAt?: string;
+  author?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+};
+
+export type FaqCollection = {
+  id: string;
+  pageKey: string;
+  title: string;
+  items: { q: string; a: string; order?: number }[];
+  published: boolean;
+};
+
+export type SeoPage = {
+  id: string;
+  routeKey: string;
+  title: string;
+  metaDescription: string;
+  primaryKeyword: string;
+  canonicalUrl?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  robotsIndex?: boolean;
+};

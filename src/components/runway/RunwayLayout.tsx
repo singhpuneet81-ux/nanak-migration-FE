@@ -33,11 +33,19 @@ const BOOKING_TABS = [
   ["oaf", "Assessment form"],
 ] as const;
 
+const WEBSITE_TABS = [
+  ["homepage", "Homepage"],
+  ["blog", "Blog posts"],
+  ["faq", "FAQs"],
+  ["seo", "SEO & meta"],
+] as const;
+
 export default function RunwayLayout() {
   const { user, logout } = useAuth();
   const loc = useLocation();
   const isBookings = loc.pathname.startsWith("/bookings");
   const isLeads = loc.pathname.startsWith("/leads") || loc.pathname === "/";
+  const isWebsite = loc.pathname.startsWith("/website");
   const activeModule =
     MODULES.find((m) => loc.pathname.startsWith((m as { match?: string }).match || m.base || "___"))?.id || (isLeads ? "leads" : "");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -193,12 +201,12 @@ export default function RunwayLayout() {
       </div>
 
       <main className="runway-main w-full flex-1 bg-surface/40 px-3 pb-20 pt-4 sm:px-5 md:ml-56 md:max-w-none md:px-6 md:pb-16 md:pt-6 lg:ml-64 lg:max-w-[1280px] lg:px-8 lg:pt-7">
-        {(isBookings || isLeads) && (
+        {(isBookings || isLeads || isWebsite) && (
           <div className="subtabs -mx-1 px-1">
-            {(isBookings ? BOOKING_TABS : LEAD_TABS).map(([id, label]) => (
+            {(isBookings ? BOOKING_TABS : isWebsite ? WEBSITE_TABS : LEAD_TABS).map(([id, label]) => (
               <NavLink
                 key={id}
-                to={isBookings ? `/bookings/${id}` : `/leads/${id}`}
+                to={isBookings ? `/bookings/${id}` : isWebsite ? `/website/${id}` : `/leads/${id}`}
                 className={({ isActive }) => cn("subtab", isActive && "subtab-on")}
               >
                 {label}
