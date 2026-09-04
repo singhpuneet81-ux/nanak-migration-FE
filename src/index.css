@@ -201,6 +201,112 @@ h3,
   }
 }
 
+/* ── Public self-serve booking page (migration website theme) ─────────── */
+.book-public-page {
+  min-height: 100vh;
+  background: linear-gradient(155deg, #f8fafc 0%, #eef3f9 32%, #e2ecf6 62%, #d0e0f0 100%);
+  color: #16181f;
+  font-family: "DM Sans", system-ui, sans-serif;
+}
+.book-public-header {
+  background: linear-gradient(135deg, #0a1024 0%, #152448 38%, #1e3a6e 72%, #2a4a82 100%);
+  color: #fff;
+  border-bottom: 1px solid rgba(232, 160, 23, 0.35);
+}
+.book-public-header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.book-public-brand {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.book-public-marn {
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
+.book-public-site-link {
+  color: #e8a017;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom: 1.5px solid rgba(232, 160, 23, 0.45);
+  padding-bottom: 2px;
+}
+.book-public-site-link:hover {
+  color: #f0b53a;
+}
+.book-public-main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px 64px;
+}
+.book-public-intro {
+  margin-bottom: 28px;
+  max-width: 640px;
+}
+.book-public-eyebrow {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #e8a017;
+}
+.book-public-title {
+  margin: 0 0 12px;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: #152448;
+}
+.book-public-title span {
+  color: #e8a017;
+}
+.book-public-deck {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.65;
+  color: #3f4b5f;
+}
+.book-public-widget {
+  max-width: 920px;
+}
+.book-public-disclaimer {
+  margin: 28px 0 0;
+  max-width: 720px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #6b7280;
+}
+.book-public-footer {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 24px 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  font-size: 12.5px;
+  color: #64748b;
+}
+.book-public-footer a {
+  color: #152448;
+  font-weight: 600;
+  text-decoration: none;
+}
+.book-public-footer a:hover {
+  color: #e8a017;
+}
+
 /* Pre-Consultation Check chatbot iframe */
 html.pc-embed-html,
 html.pc-embed-html body.pc-embed-body {

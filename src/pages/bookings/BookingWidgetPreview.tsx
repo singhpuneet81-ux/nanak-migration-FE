@@ -56,6 +56,15 @@ export default function BookingWidgetPreview() {
   const offices = data?.offices?.length ? data.offices : FALLBACK_OFFICES;
   const heardOpts = data?.heard?.length ? data.heard : FALLBACK_HEARD;
   const bookings = data?.bookings ?? [];
+  const publicBookUrl = typeof window !== "undefined" ? `${window.location.origin}/book` : "/book";
+  const [linkCopied, setLinkCopied] = useState(false);
+
+  async function copyPublicLink() {
+    await navigator.clipboard.writeText(publicBookUrl);
+    setLinkCopied(true);
+    toast("Public booking link copied");
+    setTimeout(() => setLinkCopied(false), 1600);
+  }
 
   const [step, setStep] = useState(1);
   const [typeId, setTypeId] = useState<string | null>(null);
@@ -161,8 +170,26 @@ export default function BookingWidgetPreview() {
       <div className="mb-5">
         <h1 className="page-title">Booking page (client view)</h1>
         <p className="mt-1 text-[13px] text-muted">
-          Exactly what the client sees on nanakmigration.com.au/book — book one and watch it land.
+          Exactly what the client sees — share the public link so they can book without logging in.
         </p>
+      </div>
+
+      <div className="card mb-5 p-4">
+        <div className="text-sm font-bold text-navy">Public booking link (no login)</div>
+        <p className="mt-1 text-xs text-muted">
+          Send this URL to clients. Bookings land in Schedule and create/update the lead automatically.
+        </p>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <code className="flex-1 rounded-lg border border-line bg-surface px-3 py-2 font-mono text-[12.5px] text-navy">
+            {publicBookUrl}
+          </code>
+          <button type="button" className="btn btn-gold" onClick={copyPublicLink}>
+            {linkCopied ? "Copied" : "Copy link"}
+          </button>
+          <a className="btn" href={publicBookUrl} target="_blank" rel="noopener noreferrer">
+            Open
+          </a>
+        </div>
       </div>
 
       <div className="grid items-start gap-6 lg:grid-cols-2">

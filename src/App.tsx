@@ -27,6 +27,7 @@ import FaqCMSPage from "@/pages/website/FaqCMSPage";
 import SeoPage from "@/pages/website/SeoPage";
 import HeroSectionChatbotPage from "@/pages/public/HeroSectionChatbotPage";
 import ImmigrationNewsletterPage from "@/pages/public/ImmigrationNewsletterPage";
+import PublicBookingPage from "@/pages/public/PublicBookingPage";
 
 const qc = new QueryClient({
   defaultOptions: {
@@ -58,11 +59,13 @@ export default function App() {
     <QueryClientProvider client={qc}>
       <BrowserRouter>
         <Routes>
-          {/* Public embeds — no login, no JWT, no admin chrome */}
+          {/* Public embeds / self-serve — no login, no JWT, no admin chrome */}
           <Route path="/herosection_chatbot" element={<HeroSectionChatbotPage />} />
           <Route path="/herosection-chatbot" element={<HeroSectionChatbotPage />} />
           <Route path="/immigration_newsletter" element={<ImmigrationNewsletterPage />} />
           <Route path="/immigration-newsletter" element={<ImmigrationNewsletterPage />} />
+          <Route path="/book" element={<PublicBookingPage />} />
+          <Route path="/book-consultation" element={<PublicBookingPage />} />
 
           <Route
             path="/login"

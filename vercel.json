@@ -37,6 +37,22 @@
       ]
     },
     {
+      "source": "/book",
+      "headers": [
+        { "key": "Content-Security-Policy", "value": "frame-ancestors *" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Cache-Control", "value": "public, max-age=60" }
+      ]
+    },
+    {
+      "source": "/book-consultation",
+      "headers": [
+        { "key": "Content-Security-Policy", "value": "frame-ancestors *" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Cache-Control", "value": "public, max-age=60" }
+      ]
+    },
+    {
       "source": "/embed-parent.js",
       "headers": [
         { "key": "Access-Control-Allow-Origin", "value": "*" },
