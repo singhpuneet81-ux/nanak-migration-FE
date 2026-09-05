@@ -38,7 +38,7 @@ const WEBSITE_TABS = [
   ["homepage", "Homepage"],
   ["blog", "Blog posts"],
   ["faq", "FAQs"],
-  ["seo", "SEO & meta"],
+  ["seo", "Website content"],
 ] as const;
 
 export default function RunwayLayout() {
