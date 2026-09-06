@@ -23,6 +23,7 @@ import CompliancePage from "@/pages/CompliancePage";
 import ReportsPage from "@/pages/ReportsPage";
 import HomepageCMSPage from "@/pages/website/HomepageCMSPage";
 import BlogPostsPage from "@/pages/website/BlogPostsPage";
+import NewsPostsPage from "@/pages/website/NewsPostsPage";
 import FaqCMSPage from "@/pages/website/FaqCMSPage";
 import SeoPage from "@/pages/website/SeoPage";
 import HeroSectionChatbotPage from "@/pages/public/HeroSectionChatbotPage";
@@ -97,6 +98,7 @@ export default function App() {
               <Route path="/reports" element={<ReportsPage />} />
               <Route path="/website/homepage" element={<HomepageCMSPage />} />
               <Route path="/website/blog" element={<BlogPostsPage />} />
+              <Route path="/website/news" element={<NewsPostsPage />} />
               <Route path="/website/faq" element={<FaqCMSPage />} />
               <Route path="/website/seo" element={<SeoPage />} />
             </Route>

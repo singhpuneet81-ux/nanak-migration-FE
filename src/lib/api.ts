@@ -356,6 +356,28 @@ export async function deleteBlog(id: string) {
   return request<{ ok: boolean }>(`/admin/blogs/${id}`, { method: "DELETE" });
 }
 
+// ——— Immigration News CMS ———
+export async function getNews(params: Record<string, string> = {}) {
+  const q = new URLSearchParams(params).toString();
+  return request<{ news: NewsArticle[] }>(`/admin/news${q ? `?${q}` : ""}`);
+}
+
+export async function getNewsArticle(id: string) {
+  return request<NewsArticle>(`/admin/news/${id}`);
+}
+
+export async function createNews(body: Record<string, unknown>) {
+  return request<NewsArticle>("/admin/news", { method: "POST", body: JSON.stringify(body) });
+}
+
+export async function updateNews(id: string, body: Record<string, unknown>) {
+  return request<NewsArticle>(`/admin/news/${id}`, { method: "PATCH", body: JSON.stringify(body) });
+}
+
+export async function deleteNews(id: string) {
+  return request<{ ok: boolean }>(`/admin/news/${id}`, { method: "DELETE" });
+}
+
 // ——— FAQ CMS ———
 export async function getFaqs() {
   return request<{ collections: FaqCollection[] }>("/admin/faqs");
@@ -400,6 +422,26 @@ export type BlogPost = {
   author?: string;
   seoTitle?: string;
   seoDescription?: string;
+};
+
+export type NewsArticle = {
+  id: string;
+  slug: string;
+  title: string;
+  standfirst: string;
+  body: string;
+  category: string;
+  tags: string[];
+  relatedRoute: string;
+  status: "draft" | "published";
+  publishedAt?: string;
+  updatedAt?: string;
+  author?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  ogImage?: string;
+  featured?: boolean;
+  readTime?: string;
 };
 
 export type FaqCollection = {

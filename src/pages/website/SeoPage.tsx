@@ -83,7 +83,8 @@ export default function SeoPage() {
       <div>
         <h1 className="page-title">Website content</h1>
         <p className="mt-1 text-sm text-muted">
-          Edit page titles, intro body, images and SEO fields. Changes sync to the public website via API — no developer needed.
+          Edit titles, H1, intro body, images and SEO for every public page. Changes apply on the live site after save —
+          use H1/body to override what visitors see; title/meta update the browser tab and search results.
         </p>
       </div>
 

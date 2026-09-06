@@ -37,6 +37,7 @@ const BOOKING_TABS = [
 const WEBSITE_TABS = [
   ["homepage", "Homepage"],
   ["blog", "Blog posts"],
+  ["news", "Immigration news"],
   ["faq", "FAQs"],
   ["seo", "Website content"],
 ] as const;
