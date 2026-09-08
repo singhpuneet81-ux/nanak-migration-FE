@@ -85,8 +85,15 @@ export default function BlogPostsPage() {
 
   const saveMut = useMutation({
     mutationFn: async (post: Partial<BlogPost>) => {
+      const status = post.status || "draft";
+      const cleanedTitle =
+        status === "published" && post.title
+          ? String(post.title).replace(/^\[DRAFT\]\s*/i, "").trim()
+          : post.title;
       const body = {
         ...post,
+        title: cleanedTitle,
+        status,
         tags: typeof post.tags === "string" ? String(post.tags).split(",").map((t) => t.trim()).filter(Boolean) : post.tags,
       };
       if (post.id) return updateBlog(post.id, body);
