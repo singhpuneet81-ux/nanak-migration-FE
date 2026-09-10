@@ -327,11 +327,15 @@ export async function resetSiteContent() {
   return request<Record<string, unknown>>("/admin/site-content/reset", { method: "POST" });
 }
 
-export async function syncWebsiteContent() {
-  return request<{ blogs: number; faqs: number; seoPages: number; homepage: string }>(
-    "/admin/content/sync-website",
-    { method: "POST" }
-  );
+export async function syncWebsiteContent(opts: { restoreSeo?: boolean } = {}) {
+  const q = opts.restoreSeo ? "?restoreSeo=1" : "";
+  return request<{
+    blogs: number;
+    faqs: number;
+    seoPages: number;
+    homepage: string;
+    seoMode?: string;
+  }>(`/admin/content/sync-website${q}`, { method: "POST", body: JSON.stringify(opts) });
 }
 
 // ——— Blog CMS ———
