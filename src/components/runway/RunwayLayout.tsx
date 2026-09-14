@@ -38,7 +38,7 @@ const WEBSITE_TABS = [
   ["homepage", "Homepage"],
   ["blog", "Blog posts"],
   ["news", "Immigration news"],
-  ["faq", "FAQs"],
+  ["faq", "Page FAQs"],
   ["seo", "Website content"],
 ] as const;
 

@@ -399,6 +399,20 @@ export async function deleteFaq(id: string) {
   return request<{ ok: boolean }>(`/admin/faqs/${id}`, { method: "DELETE" });
 }
 
+export async function seedMissingFaqs() {
+  return request<{ inserted: number; totalDefaults: number }>("/admin/faqs/seed-missing", {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
+}
+
+export async function upsertFaqByPageKey(pageKey: string, body: Record<string, unknown> = {}) {
+  return request<FaqCollection>(`/admin/faqs/by-key/${encodeURIComponent(pageKey)}`, {
+    method: "PUT",
+    body: JSON.stringify(body),
+  });
+}
+
 // ——— SEO CMS ———
 export async function getSeoPages() {
   return request<{ pages: SeoPage[] }>("/admin/seo");

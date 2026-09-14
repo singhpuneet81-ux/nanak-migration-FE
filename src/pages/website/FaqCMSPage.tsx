@@ -1,16 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { createFaq, deleteFaq, getFaqs, updateFaq } from "@/lib/api";
+import { useMemo, useState } from "react";
+import {
+  createFaq,
+  deleteFaq,
+  getFaqs,
+  getSeoPages,
+  seedMissingFaqs,
+  updateFaq,
+  upsertFaqByPageKey,
+  type FaqCollection,
+} from "@/lib/api";
 import { toast } from "@/lib/utils";
 
 type FaqItem = { q: string; a: string; order?: number };
-type FaqCollection = {
-  id: string;
-  pageKey: string;
-  title: string;
-  items: FaqItem[];
-  published: boolean;
-};
 
 const EMPTY: Partial<FaqCollection> = {
   pageKey: "",
@@ -21,9 +23,11 @@ const EMPTY: Partial<FaqCollection> = {
 
 export default function FaqCMSPage() {
   const qc = useQueryClient();
+  const [filter, setFilter] = useState("");
   const [editing, setEditing] = useState<Partial<FaqCollection> | null>(null);
 
   const { data, isLoading } = useQuery({ queryKey: ["faqs"], queryFn: getFaqs });
+  const { data: seoData } = useQuery({ queryKey: ["seo-pages"], queryFn: getSeoPages });
 
   const saveMut = useMutation({
     mutationFn: async (col: Partial<FaqCollection>) => {
@@ -37,7 +41,7 @@ export default function FaqCMSPage() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["faqs"] });
       setEditing(null);
-      toast("FAQ collection saved");
+      toast("FAQ collection saved — live site will pick this up shortly");
     },
     onError: (e: Error) => toast(e.message),
   });
@@ -52,7 +56,80 @@ export default function FaqCMSPage() {
     onError: (e: Error) => toast(e.message),
   });
 
+  const seedMut = useMutation({
+    mutationFn: seedMissingFaqs,
+    onSuccess: (res) => {
+      qc.invalidateQueries({ queryKey: ["faqs"] });
+      toast(`Seeded ${res.inserted} missing page FAQ collections`);
+    },
+    onError: (e: Error) => toast(e.message),
+  });
+
+  const ensureMut = useMutation({
+    mutationFn: (pageKey: string) =>
+      upsertFaqByPageKey(pageKey, {
+        title: `${pageKey
+          .split("-")
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(" ")} FAQ`,
+        published: true,
+      }),
+    onSuccess: (col) => {
+      qc.invalidateQueries({ queryKey: ["faqs"] });
+      setEditing(col);
+      toast("FAQ collection ready — edit questions below");
+    },
+    onError: (e: Error) => toast(e.message),
+  });
+
   const collections = data?.collections ?? [];
+  const byKey = useMemo(() => {
+    const map = new Map<string, FaqCollection>();
+    for (const c of collections) map.set(c.pageKey, c);
+    if (map.has("homepage") && !map.has("home")) map.set("home", map.get("homepage")!);
+    return map;
+  }, [collections]);
+
+  const seoPages = seoData?.pages ?? [];
+
+  const rows = useMemo(() => {
+    const q = filter.trim().toLowerCase();
+    const fromSeo = seoPages.map((p) => {
+      const col = byKey.get(p.routeKey) || (p.routeKey === "home" ? byKey.get("homepage") : undefined);
+      return {
+        pageKey: p.routeKey === "home" ? "homepage" : p.routeKey,
+        label: p.h1 || p.title || p.routeKey,
+        items: col?.items?.length || 0,
+        published: col?.published,
+        collection: col,
+        source: "seo" as const,
+      };
+    });
+
+    // Include FAQ-only keys not in SEO list
+    const seoKeys = new Set(fromSeo.map((r) => r.pageKey));
+    for (const c of collections) {
+      if (seoKeys.has(c.pageKey)) continue;
+      if (c.pageKey === "home" && seoKeys.has("homepage")) continue;
+      fromSeo.push({
+        pageKey: c.pageKey,
+        label: c.title,
+        items: c.items?.length || 0,
+        published: c.published,
+        collection: c,
+        source: "faq" as const,
+      });
+    }
+
+    fromSeo.sort((a, b) => a.pageKey.localeCompare(b.pageKey));
+    if (!q) return fromSeo;
+    return fromSeo.filter(
+      (r) =>
+        r.pageKey.includes(q) ||
+        r.label.toLowerCase().includes(q) ||
+        (r.collection?.title || "").toLowerCase().includes(q)
+    );
+  }, [seoPages, collections, byKey, filter]);
 
   function patchItem(index: number, patch: Partial<FaqItem>) {
     if (!editing) return;
@@ -63,7 +140,10 @@ export default function FaqCMSPage() {
 
   function addItem() {
     if (!editing) return;
-    setEditing({ ...editing, items: [...(editing.items || []), { q: "", a: "", order: editing.items?.length || 0 }] });
+    setEditing({
+      ...editing,
+      items: [...(editing.items || []), { q: "", a: "", order: editing.items?.length || 0 }],
+    });
   }
 
   function removeItem(index: number) {
@@ -71,47 +151,111 @@ export default function FaqCMSPage() {
     setEditing({ ...editing, items: (editing.items || []).filter((_, i) => i !== index) });
   }
 
+  function openEdit(pageKey: string, existing?: FaqCollection) {
+    if (existing) {
+      setEditing(existing);
+      return;
+    }
+    ensureMut.mutate(pageKey);
+  }
+
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="page-title">FAQ collections</h1>
-          <p className="mt-1 text-sm text-muted">Manage FAQs shown on homepage, resources and other pages.</p>
+          <h1 className="page-title">Page FAQs</h1>
+          <p className="mt-1 max-w-2xl text-sm text-muted">
+            Edit FAQ questions and answers for every public page — same flow as the homepage FAQ. Changes go live on
+            the website after save. Use “Seed missing pages” once to load defaults from the site.
+          </p>
         </div>
-        <button type="button" className="btn btn-pri" onClick={() => setEditing({ ...EMPTY })}>
-          New collection
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            className="btn"
+            disabled={seedMut.isPending}
+            onClick={() => seedMut.mutate()}
+          >
+            {seedMut.isPending ? "Seeding…" : "Seed missing pages"}
+          </button>
+          <button type="button" className="btn btn-pri" onClick={() => setEditing({ ...EMPTY })}>
+            New collection
+          </button>
+        </div>
       </div>
 
-      <div className="grid gap-3">
-        {isLoading ? (
-          <p className="text-sm text-muted">Loading…</p>
-        ) : collections.length === 0 ? (
-          <p className="text-sm text-muted">No FAQ collections yet.</p>
-        ) : (
-          collections.map((c) => (
-            <div key={c.id} className="rounded-2xl border border-line bg-white p-4">
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <div>
-                  <div className="font-semibold text-navy">{c.title}</div>
-                  <div className="text-xs text-muted">
-                    pageKey: <code>{c.pageKey}</code> · {c.items?.length || 0} items
-                  </div>
-                </div>
-                <button type="button" className="text-sm font-semibold text-navy underline" onClick={() => setEditing(c)}>
-                  Edit
-                </button>
-              </div>
-            </div>
-          ))
-        )}
+      <input
+        placeholder="Filter by page key or title…"
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+        className="h-10 w-full max-w-md rounded-lg border border-line px-3 text-sm"
+      />
+
+      <div className="overflow-hidden rounded-2xl border border-line bg-white">
+        <table className="w-full text-left text-sm">
+          <thead className="border-b border-line bg-surface/60 text-xs uppercase tracking-wide text-muted">
+            <tr>
+              <th className="px-4 py-3">Page</th>
+              <th className="px-4 py-3">Title</th>
+              <th className="px-4 py-3">Questions</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3" />
+            </tr>
+          </thead>
+          <tbody>
+            {isLoading ? (
+              <tr>
+                <td colSpan={5} className="px-4 py-8 text-muted">
+                  Loading…
+                </td>
+              </tr>
+            ) : rows.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="px-4 py-8 text-muted">
+                  No pages match your filter.
+                </td>
+              </tr>
+            ) : (
+              rows.map((row) => (
+                <tr key={row.pageKey} className="border-t border-line">
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-navy">{row.pageKey}</code>
+                  </td>
+                  <td className="px-4 py-3 text-muted">{row.label}</td>
+                  <td className="px-4 py-3">{row.items}</td>
+                  <td className="px-4 py-3">
+                    {!row.collection ? (
+                      <span className="text-xs text-amber-700">Not in CMS yet</span>
+                    ) : row.published === false ? (
+                      <span className="text-xs text-muted">Draft</span>
+                    ) : (
+                      <span className="text-xs text-emerald-700">Published</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <button
+                      type="button"
+                      className="text-sm font-semibold text-navy underline"
+                      disabled={ensureMut.isPending}
+                      onClick={() => openEdit(row.pageKey, row.collection)}
+                    >
+                      {row.collection ? "Edit" : "Add FAQs"}
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
 
       {editing && (
         <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-navy/40 p-4">
           <div className="my-8 w-full max-w-2xl rounded-2xl border border-line bg-white p-6 shadow-card">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-navy">{editing.id ? "Edit FAQ collection" : "New FAQ collection"}</h2>
+              <h2 className="text-lg font-bold text-navy">
+                {editing.id ? "Edit page FAQs" : "New FAQ collection"}
+              </h2>
               <button type="button" className="text-2xl text-muted" onClick={() => setEditing(null)}>
                 ×
               </button>
@@ -122,9 +266,14 @@ export default function FaqCMSPage() {
                 <input
                   value={editing.pageKey || ""}
                   onChange={(e) => setEditing({ ...editing, pageKey: e.target.value })}
-                  placeholder="homepage, resources, blog"
+                  placeholder="skills-in-demand-visa, homepage, about…"
                   className="h-10 w-full rounded-lg border border-line px-3 text-sm"
+                  disabled={!!editing.id}
                 />
+                <span className="mt-1 block text-[11px] text-muted">
+                  Must match the page URL slug (same as Website content route key). Homepage uses{" "}
+                  <code>homepage</code>.
+                </span>
               </label>
               <label className="block">
                 <span className="mb-1 block text-xs font-semibold text-muted">Section title</span>
@@ -170,7 +319,12 @@ export default function FaqCMSPage() {
               </button>
             </div>
             <div className="mt-5 flex flex-wrap gap-2">
-              <button type="button" className="btn btn-pri" disabled={saveMut.isPending} onClick={() => saveMut.mutate(editing)}>
+              <button
+                type="button"
+                className="btn btn-pri"
+                disabled={saveMut.isPending}
+                onClick={() => saveMut.mutate(editing)}
+              >
                 {saveMut.isPending ? "Saving…" : "Save"}
               </button>
               {editing.id && (
