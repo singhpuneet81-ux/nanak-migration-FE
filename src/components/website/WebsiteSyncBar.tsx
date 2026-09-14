@@ -25,7 +25,7 @@ export default function WebsiteSyncBar() {
     mutationFn: () => syncWebsiteContent({ restoreSeo: true }),
     onSuccess: () => {
       invalidate();
-      toast("SEO titles restored from code defaults (body/H1 preserved).");
+      toast("SEO titles, descriptions and keywords restored from code defaults (body/H1 preserved).");
     },
     onError: (e: Error) => toast(e.message),
   });

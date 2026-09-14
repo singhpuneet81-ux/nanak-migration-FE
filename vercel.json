@@ -1,6 +1,14 @@
 {
   "headers": [
     {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
       "source": "/herosection_chatbot",
       "headers": [
         { "key": "Content-Security-Policy", "value": "frame-ancestors *" },
@@ -61,6 +69,6 @@
     }
   ],
   "rewrites": [
-    { "source": "/((?!embed-parent\\.js).*)", "destination": "/index.html" }
+    { "source": "/((?!embed-parent\\.js|robots\\.txt).*)", "destination": "/index.html" }
   ]
 }
