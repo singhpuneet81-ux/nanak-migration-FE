@@ -9,6 +9,7 @@ import WebsiteSyncBar from "@/components/website/WebsiteSyncBar";
 const MODULES = [
   { id: "leads", label: "Leads", live: true, base: "/leads/radar", match: "/leads" },
   { id: "bookings", label: "Bookings", live: true, base: "/bookings/sched", match: "/bookings" },
+  { id: "governance", label: "Governance", live: true, base: "/governance/tickets", match: "/governance" },
   { id: "matters", label: "Matters", live: true, base: "/matters" },
   { id: "clients", label: "Clients", live: true, base: "/clients" },
   { id: "docs", label: "Documents & forms", live: true, base: "/documents" },
@@ -35,6 +36,11 @@ const BOOKING_TABS = [
   ["oaf", "Assessment form"],
 ] as const;
 
+const GOVERNANCE_TABS = [
+  ["tickets", "Tickets"],
+  ["refunds", "Refunds"],
+] as const;
+
 const WEBSITE_TABS = [
   ["homepage", "Homepage"],
   ["blog", "Blog posts"],
@@ -49,6 +55,7 @@ export default function RunwayLayout() {
   const isBookings = loc.pathname.startsWith("/bookings");
   const isLeads = loc.pathname.startsWith("/leads") || loc.pathname === "/";
   const isWebsite = loc.pathname.startsWith("/website");
+  const isGovernance = loc.pathname.startsWith("/governance");
   const activeModule =
     MODULES.find((m) => loc.pathname.startsWith((m as { match?: string }).match || m.base || "___"))?.id || (isLeads ? "leads" : "");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -204,13 +211,28 @@ export default function RunwayLayout() {
       </div>
 
       <main className="runway-main w-full flex-1 bg-surface/40 px-3 pb-20 pt-4 sm:px-5 md:ml-56 md:max-w-none md:px-6 md:pb-16 md:pt-6 lg:ml-64 lg:max-w-[1280px] lg:px-8 lg:pt-7">
-        {(isBookings || isLeads || isWebsite) && (
+        {(isBookings || isLeads || isWebsite || isGovernance) && (
           <div className="subtabs-wrap">
             <div className="subtabs -mx-1 px-1">
-            {(isBookings ? BOOKING_TABS : isWebsite ? WEBSITE_TABS : LEAD_TABS).map(([id, label]) => (
+            {(isBookings
+              ? BOOKING_TABS
+              : isWebsite
+                ? WEBSITE_TABS
+                : isGovernance
+                  ? GOVERNANCE_TABS
+                  : LEAD_TABS
+            ).map(([id, label]) => (
               <NavLink
                 key={id}
-                to={isBookings ? `/bookings/${id}` : isWebsite ? `/website/${id}` : `/leads/${id}`}
+                to={
+                  isBookings
+                    ? `/bookings/${id}`
+                    : isWebsite
+                      ? `/website/${id}`
+                      : isGovernance
+                        ? `/governance/${id}`
+                        : `/leads/${id}`
+                }
                 className={({ isActive }) => cn("subtab", isActive && "subtab-on")}
               >
                 {label}

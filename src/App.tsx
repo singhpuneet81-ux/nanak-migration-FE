@@ -17,6 +17,8 @@ import CommsQueuePage from "@/pages/bookings/CommsQueuePage";
 import BookingWidgetPreview from "@/pages/bookings/BookingWidgetPreview";
 import AssessmentFormPreview from "@/pages/bookings/AssessmentFormPreview";
 import PaymentsPage from "@/pages/bookings/PaymentsPage";
+import GovernanceTicketsPage from "@/pages/governance/GovernanceTicketsPage";
+import RefundRequestsPage from "@/pages/governance/RefundRequestsPage";
 import MattersPage from "@/pages/MattersPage";
 import ClientsPage from "@/pages/ClientsPage";
 import DocumentsPage from "@/pages/DocumentsPage";
@@ -93,6 +95,8 @@ export default function App() {
               <Route path="/bookings/comms" element={<CommsQueuePage />} />
               <Route path="/bookings/widget" element={<BookingWidgetPreview />} />
               <Route path="/bookings/oaf" element={<AssessmentFormPreview />} />
+              <Route path="/governance/tickets" element={<GovernanceTicketsPage />} />
+              <Route path="/governance/refunds" element={<RefundRequestsPage />} />
               <Route path="/matters" element={<MattersPage />} />
               <Route path="/clients" element={<ClientsPage />} />
               <Route path="/documents" element={<DocumentsPage />} />

@@ -166,6 +166,79 @@ export async function getBookingPayments() {
   }>("/admin/bookings/payments");
 }
 
+export type GovernanceTicket = {
+  id: string;
+  _id?: string;
+  ref: string;
+  name: string;
+  email: string;
+  mobile?: string;
+  category: string;
+  subject: string;
+  details: string;
+  relatedRef?: string;
+  status: string;
+  notes: { text: string; at?: string; by?: string }[];
+  createdAt: string;
+  updatedAt?: string;
+};
+
+export async function getGovernanceTickets(params: Record<string, string> = {}) {
+  const q = new URLSearchParams(params).toString();
+  return request<{
+    tickets: GovernanceTicket[];
+    kpis: { total: number; new: number; inProgress: number; resolved: number };
+    categories: string[];
+  }>(`/admin/governance-tickets${q ? `?${q}` : ""}`);
+}
+
+export async function updateGovernanceTicket(id: string, body: Record<string, unknown>) {
+  return request<GovernanceTicket>(`/admin/governance-tickets/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+}
+
+export type RefundRequest = {
+  id: string;
+  _id?: string;
+  ref: string;
+  name: string;
+  email: string;
+  mobile?: string;
+  bookingRef?: string;
+  invoiceRef?: string;
+  amountAud: number;
+  reason: string;
+  paymentMethod: string;
+  status: string;
+  notes: { text: string; at?: string; by?: string }[];
+  createdAt: string;
+  updatedAt?: string;
+};
+
+export async function getRefundRequests(params: Record<string, string> = {}) {
+  const q = new URLSearchParams(params).toString();
+  return request<{
+    requests: RefundRequest[];
+    kpis: {
+      total: number;
+      new: number;
+      reviewing: number;
+      approved: number;
+      refunded: number;
+      totalRefundedAud: number;
+    };
+  }>(`/admin/refund-requests${q ? `?${q}` : ""}`);
+}
+
+export async function updateRefundRequest(id: string, body: Record<string, unknown>) {
+  return request<RefundRequest>(`/admin/refund-requests/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+}
+
 export async function createBooking(body: Record<string, unknown>) {
   return request<import("@/types/runway").Booking>("/admin/bookings", {
     method: "POST",
