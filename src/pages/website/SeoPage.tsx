@@ -170,7 +170,7 @@ export default function SeoPage() {
               })}
               {field("Intro / body copy", "body", {
                 rows: 5,
-                hint: "Shown as the page intro under the H1 when set. Plain text is fine.",
+                hint: 'Shown under the H1. Plain text works. HTML anchors are supported, e.g. <a href="/skilled-independent-189">subclass 189</a>.',
               })}
               {field("Hero / feature image URL", "heroImage", {
                 hint: "Full URL to an image (HTTPS). Used on-page when supported and for social sharing fallback.",
