@@ -94,7 +94,15 @@ export default function FaqCMSPage() {
 
   const rows = useMemo(() => {
     const q = filter.trim().toLowerCase();
-    const fromSeo = seoPages.map((p) => {
+    type FaqRow = {
+      pageKey: string;
+      label: string;
+      items: number;
+      published?: boolean;
+      collection?: FaqCollection;
+      source: "seo" | "faq";
+    };
+    const fromSeo: FaqRow[] = seoPages.map((p) => {
       const col = byKey.get(p.routeKey) || (p.routeKey === "home" ? byKey.get("homepage") : undefined);
       return {
         pageKey: p.routeKey === "home" ? "homepage" : p.routeKey,
@@ -102,7 +110,7 @@ export default function FaqCMSPage() {
         items: col?.items?.length || 0,
         published: col?.published,
         collection: col,
-        source: "seo" as const,
+        source: "seo",
       };
     });
 
@@ -117,7 +125,7 @@ export default function FaqCMSPage() {
         items: c.items?.length || 0,
         published: c.published,
         collection: c,
-        source: "faq" as const,
+        source: "faq",
       });
     }
 
