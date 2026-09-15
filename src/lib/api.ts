@@ -148,13 +148,22 @@ export async function getBookings() {
     today: number;
     upcoming: import("@/types/runway").Booking[];
     past: import("@/types/runway").Booking[];
+    pendingPayment?: import("@/types/runway").Booking[];
     remindersQueued: number;
     noShowRate: number | null;
+    payments?: { paidCount: number; pendingCount: number; totalCents: number; totalAud: number };
     consultTypes: { id: string; name: string; dur: number; fee: number; who: string; desc: string }[];
     offices: string[];
     heard: string[];
     msgLabels: Record<string, string>;
   }>("/admin/bookings");
+}
+
+export async function getBookingPayments() {
+  return request<{
+    kpis: { paidCount: number; pendingCount: number; totalCents: number; totalAud: number };
+    payments: (import("@/types/runway").Booking & { amountAud?: number })[];
+  }>("/admin/bookings/payments");
 }
 
 export async function createBooking(body: Record<string, unknown>) {

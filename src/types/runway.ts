@@ -56,10 +56,18 @@ export type Booking = {
   office: string;
   mode: "Video" | "Phone";
   at: string;
-  status: "confirmed" | "completed" | "no-show" | "cancelled";
+  status: "pending_payment" | "confirmed" | "completed" | "no-show" | "cancelled";
   topic: string;
   heard: string;
   oaf: { status: string; data: Record<string, string> | null };
+  payment?: {
+    status: "not_required" | "pending" | "paid" | "failed" | "cancelled";
+    amountCents: number;
+    currency?: string;
+    stripeSessionId?: string;
+    stripePaymentIntentId?: string;
+    paidAt?: string | null;
+  };
   msgs: { kind: string; due: string; sent: string | null; body?: string }[];
   consultType?: { id: string; name: string; dur: number; fee: number; who: string; desc: string };
 };
@@ -162,6 +170,8 @@ export type ReportsData = {
     clients: number;
     openMatters: number;
     pendingCompliance: number;
+    paidConsults?: number;
+    paymentRevenueCents?: number;
   };
   funnel: {
     newLeads: number;
@@ -174,6 +184,11 @@ export type ReportsData = {
     confirmed: number;
     completed: number;
     noShow: number;
+  };
+  payments?: {
+    paidCount: number;
+    pendingCount: number;
+    totalCents: number;
   };
   documents: {
     total: number;

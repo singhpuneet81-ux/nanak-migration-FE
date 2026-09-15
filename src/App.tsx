@@ -16,6 +16,7 @@ import SchedulePage from "@/pages/bookings/SchedulePage";
 import CommsQueuePage from "@/pages/bookings/CommsQueuePage";
 import BookingWidgetPreview from "@/pages/bookings/BookingWidgetPreview";
 import AssessmentFormPreview from "@/pages/bookings/AssessmentFormPreview";
+import PaymentsPage from "@/pages/bookings/PaymentsPage";
 import MattersPage from "@/pages/MattersPage";
 import ClientsPage from "@/pages/ClientsPage";
 import DocumentsPage from "@/pages/DocumentsPage";
@@ -88,6 +89,7 @@ export default function App() {
               <Route path="/leads/team" element={<AllocationPage />} />
               <Route path="/leads/exp" element={<ExportCentrePage />} />
               <Route path="/bookings/sched" element={<SchedulePage />} />
+              <Route path="/bookings/payments" element={<PaymentsPage />} />
               <Route path="/bookings/comms" element={<CommsQueuePage />} />
               <Route path="/bookings/widget" element={<BookingWidgetPreview />} />
               <Route path="/bookings/oaf" element={<AssessmentFormPreview />} />

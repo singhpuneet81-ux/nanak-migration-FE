@@ -29,6 +29,14 @@ function BookingCard({
             {fday(b.at)} {ftime(b.at)}
           </div>
           {b.topic && <div className="mt-1 text-xs">{b.topic}</div>}
+          {b.payment?.status === "paid" && (
+            <div className="mt-1 text-xs font-semibold text-ok">
+              Paid {b.payment.amountCents ? `$${(b.payment.amountCents / 100).toFixed(0)} AUD` : ""} via Stripe
+            </div>
+          )}
+          {b.status === "pending_payment" && (
+            <div className="mt-1 text-xs font-semibold text-urgent">Awaiting Stripe payment</div>
+          )}
         </div>
         <span
           className={cn(
@@ -36,10 +44,11 @@ function BookingCard({
             b.status === "confirmed" && "bg-blue-50 text-blue-700",
             b.status === "completed" && "bg-green-50 text-ok",
             b.status === "no-show" && "bg-red-50 text-crit",
-            b.status === "cancelled" && "bg-gray-100 text-muted"
+            b.status === "cancelled" && "bg-gray-100 text-muted",
+            b.status === "pending_payment" && "bg-amber-50 text-amber-800"
           )}
         >
-          {b.status}
+          {b.status === "pending_payment" ? "pending pay" : b.status}
         </span>
       </div>
       {b.oaf && (
@@ -103,7 +112,7 @@ export default function SchedulePage() {
         <p className="mt-1 text-[13px] text-muted">Every website booking lands here confirmed, reminded and linked to its lead.</p>
       </div>
 
-      <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-5">
         <div className="card p-3.5">
           <div className="text-[11px] font-semibold uppercase text-muted">Today</div>
           <div className={`text-2xl font-bold ${data.today ? "text-urgent" : ""}`}>{data.today}</div>
@@ -111,6 +120,10 @@ export default function SchedulePage() {
         <div className="card p-3.5">
           <div className="text-[11px] font-semibold uppercase text-muted">Upcoming</div>
           <div className="text-2xl font-bold">{data.upcoming.length}</div>
+        </div>
+        <div className="card p-3.5">
+          <div className="text-[11px] font-semibold uppercase text-muted">Paid (Stripe)</div>
+          <div className="text-2xl font-bold text-ok">{data.payments?.paidCount ?? 0}</div>
         </div>
         <div className="card p-3.5">
           <div className="text-[11px] font-semibold uppercase text-muted">Reminders queued</div>

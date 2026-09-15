@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getReports } from "@/lib/api";
+import { getReports, fm } from "@/lib/api";
 import { PaginationBar, usePagination } from "@/components/runway/Pagination";
 import { ListLoaderCard } from "@/components/runway/ListLoader";
 
@@ -27,12 +27,13 @@ export default function ReportsPage() {
         <p className="mt-1 text-[13px] text-muted">Operational reporting across leads, bookings, clients, matters, documents and AML queue.</p>
       </div>
 
-      <div className="mb-4 grid grid-cols-2 gap-3 xl:grid-cols-5">
+      <div className="mb-4 grid grid-cols-2 gap-3 xl:grid-cols-6">
         <div className="card p-3.5"><div className="text-[11px] font-semibold uppercase text-muted">Leads</div><div className="text-2xl font-bold">{data.kpis.leads}</div></div>
         <div className="card p-3.5"><div className="text-[11px] font-semibold uppercase text-muted">Bookings</div><div className="text-2xl font-bold">{data.kpis.bookings}</div></div>
         <div className="card p-3.5"><div className="text-[11px] font-semibold uppercase text-muted">Clients</div><div className="text-2xl font-bold">{data.kpis.clients}</div></div>
         <div className="card p-3.5"><div className="text-[11px] font-semibold uppercase text-muted">Open matters</div><div className="text-2xl font-bold">{data.kpis.openMatters}</div></div>
-        <div className="card p-3.5"><div className="text-[11px] font-semibold uppercase text-muted">Pending AML</div><div className="text-2xl font-bold">{data.kpis.pendingCompliance}</div></div>
+        <div className="card p-3.5"><div className="text-[11px] font-semibold uppercase text-muted">Paid consults</div><div className="text-2xl font-bold text-ok">{data.kpis.paidConsults ?? data.payments?.paidCount ?? 0}</div></div>
+        <div className="card p-3.5"><div className="text-[11px] font-semibold uppercase text-muted">Payment revenue</div><div className="text-2xl font-bold">{fm(((data.kpis.paymentRevenueCents ?? data.payments?.totalCents ?? 0) / 100))}</div></div>
       </div>
 
       <div className="grid gap-4 xl:grid-cols-3">
@@ -53,6 +54,8 @@ export default function ReportsPage() {
             <div className="flex justify-between"><span>Confirmed</span><b>{data.bookings.confirmed}</b></div>
             <div className="flex justify-between"><span>Completed</span><b>{data.bookings.completed}</b></div>
             <div className="flex justify-between"><span>No-show</span><b>{data.bookings.noShow}</b></div>
+            <div className="flex justify-between"><span>Stripe paid</span><b>{data.payments?.paidCount ?? 0}</b></div>
+            <div className="flex justify-between"><span>Checkout pending</span><b>{data.payments?.pendingCount ?? 0}</b></div>
           </div>
         </div>
 

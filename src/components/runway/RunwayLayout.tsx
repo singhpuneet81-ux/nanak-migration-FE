@@ -29,6 +29,7 @@ const LEAD_TABS = [
 
 const BOOKING_TABS = [
   ["sched", "Schedule"],
+  ["payments", "Payments"],
   ["comms", "Comms queue"],
   ["widget", "Booking page"],
   ["oaf", "Assessment form"],
