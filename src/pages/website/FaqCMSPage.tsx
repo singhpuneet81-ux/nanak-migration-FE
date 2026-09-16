@@ -41,7 +41,7 @@ export default function FaqCMSPage() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["faqs"] });
       setEditing(null);
-      toast("FAQ collection saved — live site will pick this up shortly");
+      toast("FAQ saved — the public site refreshes within seconds");
     },
     onError: (e: Error) => toast(e.message),
   });
